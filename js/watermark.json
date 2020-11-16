@@ -1,0 +1,48 @@
+{
+    "timeline": {
+        "soundtrack": {
+            "src": "https://shotstack-assets.s3-ap-southeast-2.amazonaws.com/music/unminus/happy.mp3",
+            "effect": "fadeOut"
+            
+        },
+        "background": "#000000",
+        "tracks": [
+            {
+                "clips": [
+                    {
+                        "asset": {
+                            "type": "image",
+                            "src": "WATERMARK_URL_VAR"
+                        },
+                        "start": 0,
+                        "length": 5,
+                        "fit": "none",
+                        "scale": 0.65,
+                        "opacity": 0.5,
+                        "position": "POSITION_VAR",
+                        "offset": {
+                            "x": 0.4,
+                            "y": 0.4
+                        }
+                    }
+                ]
+            },
+            {
+                "clips": [
+                    {
+                        "asset": {
+                            "type": "video",
+                            "src": "VIDEO_URL_VAR"
+                        },
+                        "start": 0,
+                        "length": 5
+                    }
+                ]
+            }
+        ]
+    },
+    "output": {
+        "format": "mp4",
+        "resolution": "sd"
+    }
+}
