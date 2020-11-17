@@ -75,3 +75,12 @@ a:hover {
 #instructions p {
     margin: 0;
 }
+
+#advanced {
+    display: none;
+}
+
+#advanced-checkbox-group label{
+    cursor: pointer;
+    font-weight: 700;
+}

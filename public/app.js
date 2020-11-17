@@ -11,7 +11,18 @@ var player;
  * @param {String} src  the video URL
  */
 function initialiseVideo(src) {
-    player = new Plyr('#player');
+
+    player = new Plyr('#player', {
+        controls: [
+        'play-large',
+        'play',
+        'progress',
+        'mute',
+        'volume',
+        'download',
+        'fullscreen'
+        ]
+    });
 
     player.source = {
         type: 'video',
@@ -164,16 +175,10 @@ function resetVideo() {
     $('#json').hide();
 }
 
-$('#video_url').val('http://test.derkzomer.com/videos/Cassette_Tape.mp4')
-$('#watermark_url').val('https://shotstack-assets.s3-ap-southeast-2.amazonaws.com/branding/logo-watermark-wht.png')
-
 /**
  * Submit the form with data to create a Shotstack edit
  */
 function submitVideoEdit() {
-    // $('#submit-video').prop('disabled', true);
-    // $('#instructions').hide();
-    // $('#status').removeClass('d-none').addClass('d-flex');
     updateStatus('submitted');
 
     var formData = {
@@ -181,10 +186,10 @@ function submitVideoEdit() {
         'watermark': $('#watermark_url').val(),
         'position': $('#position option:selected').val(),
         'advanced': $('#advanced-checkbox').is(':checked'),
-        'scale': $('#watermark-scale').val(),
+        'scale': $('#watermark-scale option:selected').val(),
         'offsetX': $('#watermark-x-offset').val(),
         'offsetY': $('#watermark-y-offset').val(),
-        'opacity': $('#watermark-opacity').val()
+        'opacity': $('#watermark-opacity option:selected').val(),
     };
 
     $.ajax({
@@ -249,17 +254,20 @@ function prettyPrintJson(obj) {
  * @param json
  */
 function initialiseJson(json) {
+    $('#json').show();
     $('.json-container').html(prettyPrintJson(json));
 }
 
 $('#advanced-checkbox').click(function(e){
     
     if($('#advanced-checkbox').is(':checked')){
-        $('#advanced').removeClass('d-none');
-        $("input.advanced").prop('required',true);
+        $('#advanced').slideDown('fast');
+        $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-up float-right');
+        $(('input.advanced') && ('select.advanced')).prop('required',true);
     } else {
-        $('#advanced').addClass('d-none');
-        $("input.advanced").removeAttr('required');
+        $('#advanced').slideUp('fast');
+        $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-down float-right');
+        $(('input.advanced') && ('select.advanced')).removeAttr('required');
     }
 })
 
