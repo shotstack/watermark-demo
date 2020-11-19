@@ -1,4 +1,4 @@
-# Shotstack Watermark Demo
+# Shotstack Watermarker Demo
 
 This project demonstrates how to use the Shotstack cloud video editing API to build an 
 application that adds a watermark to your video using a form.
