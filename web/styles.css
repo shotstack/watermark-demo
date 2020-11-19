@@ -93,7 +93,11 @@ a:hover {
     display: none;
 }
 
-#watermark-toggle, #video-toggle, #watermark-toggle label, #video-toggle label {
+#watermark-toggle, #video-toggle {
+    height: 100px;
+}
+
+#watermark-toggle, #video-toggle {
     cursor: pointer;
 }
 

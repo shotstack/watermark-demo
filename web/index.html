@@ -41,20 +41,22 @@
                                         <h5>Video</h5>
                                     </div>
                                     <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Please keep your video file under 250MB."></i>
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Please keep your video file under 250MB. Upload functionality is coming soon."></i>
                                     </div>
                                 </div>
                                 <div class="row mb-3 mx-1" id="video-toggle">
-                                    <div id="video_toggle_upload" class="col-6 text-center py-4 border">
-                                        <label class="w-100 h-100" for="video-upload">
-                                            <i class="fas fa-upload fa-2x w-100"></i>
-                                            <span>Upload</span>
-                                        </label>
-                                        <input name="video-upload" class="d-none" type="file" id="video-upload" required/>
+                                    <div id="video_toggle_upload" class="col-6 border p-0">
+                                        <button type="button" class="btn btn-secondary w-100 h-100"disabled>
+                                            <label class="d-inline w-100 h-100" for="video-upload">
+                                                <i class="fas fa-upload fa-2x w-100"></i>
+                                            </label>
+                                            <input name="video-upload" class="d-none" type="file" id="video-upload" disabled/>
+                                        </button>
                                     </div>
-                                    <div id="video_toggle_url" class="col-6 text-center py-4 border">
-                                        <i class="fas fa-link fa-2x w-100"></i>
-                                        <span>URL</span>
+                                    <div id="video_toggle_url" class="col-6 text-center border p-0">
+                                        <button type="button" class="btn btn-secondary w-100 h-100">
+                                            <i class="fas fa-link fa-2x w-100"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 <input name="video-url"
@@ -79,19 +81,22 @@
                                         <h5>Watermark</h5>
                                     </div>
                                     <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can use either a video or an image as your watermark."></i>
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can use either a video or an image as your watermark. Upload functionality is coming soon."></i>
                                     </div>
-                                </div>                                <div class="row mb-3 mx-1" id="watermark-toggle">
-                                    <div id="watermark_toggle_upload" class="col-6 text-center py-4 border">
-                                        <label class="w-100 h-100" for="watermark-upload">
-                                            <i class="fas fa-upload fa-2x w-100"></i>
-                                            <span>Upload</span>
-                                        </label>
-                                        <input name="watermark-upload" class="d-none" type="file" id="watermark-upload" required/>
+                                </div>                                
+                                <div class="row mb-3 mx-1" id="watermark-toggle">
+                                    <div id="watermark_toggle_upload" class="col-6 border p-0">
+                                        <button type="button" class="btn btn-secondary w-100 h-100"disabled>
+                                            <label class="d-inline w-100 h-100" for="watermark-upload">
+                                                <i class="fas fa-upload fa-2x w-100"></i>
+                                            </label>
+                                            <input name="watermark-upload" class="d-none" type="file" id="watermark-upload" disabled/>
+                                        </button>
                                     </div>
-                                    <div id="watermark_toggle_url" class="col-6 text-center py-4 border">
-                                        <i class="fas fa-link fa-2x w-100"></i>
-                                        <span>URL</span>
+                                    <div id="watermark_toggle_url" class="col-6 text-center border p-0">
+                                        <button type="button" class="btn btn-secondary w-100 h-100">
+                                            <i class="fas fa-link fa-2x w-100"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 <input name="watermark-url"

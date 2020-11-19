@@ -284,11 +284,13 @@ $(('#video_toggle_url')).click(function(e){
 
     $('#video-url').slideToggle('fast', function(){
         if($("#video-url").is(":hidden")){
-            $('#video_toggle_url').css("background-color", "");
+            $('#video_toggle_url button').removeClass('btn-primary');
+            $('#video_toggle_url button').addClass('btn-secondary');
             $('#video-upload').prop('required',true);
             $('#video-url').removeAttr('required');
         } else{
-            $('#video_toggle_url').css("background-color", "#25d3d0");
+            $('#video_toggle_url button').addClass('btn-primary');
+            $('#video_toggle_url button').removeClass('btn-secondary');
             $('#video-upload').removeAttr('required');
             $('#video-url').prop('required',true);
         }
@@ -300,11 +302,13 @@ $(('#watermark_toggle_url')).click(function(e){
 
     $('#watermark_url').slideToggle('fast', function(){
         if($("#watermark_url").is(":hidden")){
-            $('#watermark_toggle_url').css("background-color", "");
+            $('#watermark_toggle_url button').removeClass('btn-primary');
+            $('#watermark_toggle_url button').addClass('btn-secondary');
             $('#watermark-upload').prop('required',true);
             $('#watermark-url').removeAttr('required');
         } else{
-            $('#watermark_toggle_url').css("background-color", "#25d3d0");
+            $('#watermark_toggle_url button').addClass('btn-primary');
+            $('#watermark_toggle_url button').removeClass('btn-secondary');
             $('#watermark-upload').removeAttr('required');
             $('#watermark-url').prop('required',true);
         }
