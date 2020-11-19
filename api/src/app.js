@@ -2,17 +2,17 @@ require('dotenv').config();
 
 var express = require('express');
 var path = require('path');
-const shotstack = require('./js/shotstackHandler');
-const jc = require('./js/jsonCreationHandler')
+const shotstack = require('./handler/shotstack/lib/shotstackHandler');
+const jc = require('./handler/shotstack/lib/jsonCreationHandler');
 
 var app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname + '../../../web')));
 
 app.post('/demo/shotstack', async (req, res) => {
-	let json;
+	var json;
 
 	try {
 		json = await jc.createJson(req.body);

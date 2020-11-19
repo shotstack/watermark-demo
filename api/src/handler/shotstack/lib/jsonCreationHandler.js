@@ -1,6 +1,6 @@
-const fs = require('fs')
+const fs = require('fs');
 
-var createJson = function(body){
+var createJson = function(body,duration){
 
 	return new Promise((resolve, reject) => {
 
@@ -8,8 +8,6 @@ var createJson = function(body){
 		var y;
 		var scale;
 		var opacity;
-
-		console.log(body.advanced);
 
 		if (body.advanced == true) {
 			x = parseFloat(body.offsetX),
@@ -48,19 +46,22 @@ var createJson = function(body){
 		console.log('y: ' + y);
 		console.log('scale: ' + scale);
 		console.log('opacity: ' + opacity);
+        console.log('duration: ' + body.duration);
 
-		fs.readFile('js/watermark.json','utf-8',function(err,data){
+		fs.readFile(__dirname+'/watermark.json','utf-8',function(err,data){
 			if (err) console.error(err);
 
 			var jj = JSON.parse(data);
 
 			jj.timeline.tracks[0].clips[0].asset.src = body.watermark;
+            jj.timeline.tracks[0].clips[0].length = parseFloat(body.duration);
 			jj.timeline.tracks[0].clips[0].position = body.position;
 			jj.timeline.tracks[0].clips[0].offset.x = x;
 			jj.timeline.tracks[0].clips[0].offset.y = y;
 			jj.timeline.tracks[0].clips[0].scale = scale;
 			jj.timeline.tracks[0].clips[0].opacity = opacity;
 			jj.timeline.tracks[1].clips[0].asset.src = body.video;
+            jj.timeline.tracks[1].clips[0].length = parseFloat(body.duration);
 
 			var json = JSON.stringify(jj);
 
@@ -70,7 +71,7 @@ var createJson = function(body){
 
 		});
 
-	})
+	});
 
 }
 

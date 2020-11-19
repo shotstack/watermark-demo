@@ -1,4 +1,4 @@
-var apiEndpoint = '/demo/shotstack'; //https://3sd8oie0n1.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack';
+var apiEndpoint = 'https://7858zwls0f.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack'; //https://7858zwls0f.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack
 var progress = 0;
 var progressIncrement = 10;
 var pollIntervalSeconds = 10;
@@ -32,6 +32,8 @@ function initialiseVideo(src) {
         }]
     };
 
+    player.download = src;
+
     $('#status').removeClass('d-flex').addClass('d-none');
     $('#player').show();
 
@@ -45,18 +47,20 @@ function initialiseVideo(src) {
  */
 function pollVideoStatus(id) {
     $.get(apiEndpoint + '/' + id, function(response) {
-        updateStatus(response.data.status);
-        if (!(response.data.status === 'done' || response.data.status === 'failed')) {
+        let res = response.data.response;
+        updateStatus(res.status);
+        if (!(res.status === 'done' || res.status === 'failed')) {
             setTimeout(function () {
                 pollVideoStatus(id);
             }, pollIntervalSeconds * 500);
-        } else if (response.data.status === 'failed') {
-            updateStatus(response.data.status);
-            $('#status small').text(response.data.error);
+        } else if (res.status === 'failed') {
+            updateStatus(res.status);
+            $('#status small').text(res.error);
 
         } else {
-            initialiseVideo(response.data.url);
-            initialiseJson(response.data.data);
+            initialiseVideo(res.url);
+            initialiseJson(res.data);
+            initialiseDownload(res.url);
             resetForm();
         }
     });
@@ -182,7 +186,7 @@ function submitVideoEdit() {
     updateStatus('submitted');
 
     var formData = {
-        'video': $('#video_url').val(),
+        'video': $('#video-url').val(),
         'watermark': $('#watermark_url').val(),
         'position': $('#position option:selected').val(),
         'advanced': $('#advanced-checkbox').is(':checked'),
@@ -190,6 +194,7 @@ function submitVideoEdit() {
         'offsetX': $('#watermark-x-offset').val(),
         'offsetY': $('#watermark-y-offset').val(),
         'opacity': $('#watermark-opacity option:selected').val(),
+        'duration': $('#clip-length').val()
     };
 
     $.ajax({
@@ -258,6 +263,10 @@ function initialiseJson(json) {
     $('.json-container').html(prettyPrintJson(json));
 }
 
+function initialiseDownload(url) {
+    $('#download').attr("href", url);
+}
+
 $('#advanced-checkbox').click(function(e){
     
     if($('#advanced-checkbox').is(':checked')){
@@ -269,7 +278,41 @@ $('#advanced-checkbox').click(function(e){
         $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-down float-right');
         $(('input.advanced') && ('select.advanced')).removeAttr('required');
     }
-})
+});
+
+$(('#video_toggle_url')).click(function(e){
+
+    $('#video-url').slideToggle('fast', function(){
+        if($("#video-url").is(":hidden")){
+            $('#video_toggle_url').css("background-color", "");
+            $('#video-upload').prop('required',true);
+            $('#video-url').removeAttr('required');
+        } else{
+            $('#video_toggle_url').css("background-color", "#25d3d0");
+            $('#video-upload').removeAttr('required');
+            $('#video-url').prop('required',true);
+        }
+    });
+
+});
+
+$(('#watermark_toggle_url')).click(function(e){
+
+    $('#watermark_url').slideToggle('fast', function(){
+        if($("#watermark_url").is(":hidden")){
+            $('#watermark_toggle_url').css("background-color", "");
+            $('#watermark-upload').prop('required',true);
+            $('#watermark-url').removeAttr('required');
+        } else{
+            $('#watermark_toggle_url').css("background-color", "#25d3d0");
+            $('#watermark-upload').removeAttr('required');
+            $('#watermark-url').prop('required',true);
+        }
+    });
+
+});
+
+$('[data-toggle="tooltip"]').tooltip({ trigger: 'click' });
 
 $(document).ready(function() {
     $('form').submit(function(event) {

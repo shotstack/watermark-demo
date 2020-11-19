@@ -84,3 +84,19 @@ a:hover {
     cursor: pointer;
     font-weight: 700;
 }
+
+#video-url  {
+    display: none;
+}
+
+#watermark_url {
+    display: none;
+}
+
+#watermark-toggle, #video-toggle, #watermark-toggle label, #video-toggle label {
+    cursor: pointer;
+}
+
+.info {
+    cursor: pointer;
+}

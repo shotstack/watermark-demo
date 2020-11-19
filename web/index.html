@@ -30,16 +30,40 @@
                 <form class="jumbotron" method="post">
                     <div class="row">
                         <div class="col-12">
+                            <h2>Video Watermarker</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
                             <div class="form-group" id="video-group">
-                                <h2>Video Watermarker</h2>
-                                <label for="video">Video URL</label>
-                                <input name="video"
+                                <div class="row">
+                                    <div class="col-8">
+                                        <h5>Video</h5>
+                                    </div>
+                                    <div class="col-4">
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Please keep your video file under 250MB."></i>
+                                    </div>
+                                </div>
+                                <div class="row mb-3 mx-1" id="video-toggle">
+                                    <div id="video_toggle_upload" class="col-6 text-center py-4 border">
+                                        <label class="w-100 h-100" for="video-upload">
+                                            <i class="fas fa-upload fa-2x w-100"></i>
+                                            <span>Upload</span>
+                                        </label>
+                                        <input name="video-upload" class="d-none" type="file" id="video-upload" required/>
+                                    </div>
+                                    <div id="video_toggle_url" class="col-6 text-center py-4 border">
+                                        <i class="fas fa-link fa-2x w-100"></i>
+                                        <span>URL</span>
+                                    </div>
+                                </div>
+                                <input name="video-url"
                                        type="url"
                                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
                                        oninvalid="setCustomValidity('Only valid URLs are allowed')"
                                        oninput="setCustomValidity('')"
                                        class="form-control"
-                                       id="video_url"
+                                       id="video-url"
                                        placeholder="Link to the video you want watermarked"
                                        maxlength="300"
                                        required
@@ -50,15 +74,34 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group" id="watermark-group">
-                                <label for="watermark">Watermark URL</label>
-                                <input name="watermark"
+                                <div class="row">
+                                    <div class="col-8">
+                                        <h5>Watermark</h5>
+                                    </div>
+                                    <div class="col-4">
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can use either a video or an image as your watermark."></i>
+                                    </div>
+                                </div>                                <div class="row mb-3 mx-1" id="watermark-toggle">
+                                    <div id="watermark_toggle_upload" class="col-6 text-center py-4 border">
+                                        <label class="w-100 h-100" for="watermark-upload">
+                                            <i class="fas fa-upload fa-2x w-100"></i>
+                                            <span>Upload</span>
+                                        </label>
+                                        <input name="watermark-upload" class="d-none" type="file" id="watermark-upload" required/>
+                                    </div>
+                                    <div id="watermark_toggle_url" class="col-6 text-center py-4 border">
+                                        <i class="fas fa-link fa-2x w-100"></i>
+                                        <span>URL</span>
+                                    </div>
+                                </div>
+                                <input name="watermark-url"
                                        type="url"
                                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
                                        oninvalid="setCustomValidity('Only valid URLs are allowed')"
                                        oninput="setCustomValidity('')"
                                        class="form-control"
                                        id="watermark_url"
-                                       placeholder="Link to the video or image watermark"
+                                       placeholder="Link to your video or image watermark"
                                        maxlength="300"
                                        required
                                 >
@@ -68,7 +111,14 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group" id="position-group">
-                                <label for="position">Watermark Position</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <label for="position">Watermark Position</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Please select where in the video you would like to place your watermark."></i>
+                                    </div>
+                                </div>
                                 <select name="position" id="position" class="custom-select" required>
                                     <option value="">Choose...</option>
                                     <option value="topLeft">Top Left</option>
@@ -76,6 +126,33 @@
                                     <option value="bottomLeft">Bottom Left</option>
                                     <option value="bottomRight">Bottom Right</option>
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group" id="clip-length-group">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <label for="clip-length">Clip length</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Enter the total duration of your video clip here in seconds."></i>
+                                    </div>
+                                </div>
+                                <input name="clip-length"
+                                       type="number"
+                                       min=1
+                                       max=600
+                                       step=1
+                                       pattern="[0-1]"
+                                       oninvalid="setCustomValidity('Only values between 1 and 600 are allowed')"
+                                       oninput="setCustomValidity('')"
+                                       class="form-control advanced"
+                                       id="clip-length"
+                                       placeholder="Clip length in seconds"
+                                       maxlength="3"
+                                >
                             </div>
                         </div>
                     </div>
@@ -105,7 +182,14 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group" id="watermark-scale-group">
-                                        <label for="watermark-scale">Watermark scale</label>
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <label for="watermark-scale">Watermark scale</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can resize your watermark to fit your video."></i>
+                                            </div>
+                                        </div>
                                         <select name="watermark-scale" id="watermark-scale" class="custom-select advanced">
                                             <option value="">Choose...</option>
                                             <option value="0.25">0.25x</option>
@@ -123,7 +207,14 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group" id="watermark-x-offset-group">
-                                        <label for="watermark-x-offset">Watermark x offset</label>
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <label for="watermark-x-offset">Watermark x offset</label>
+                                            </div>
+                                            <div class="col-2">
+                                                <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="The x-offset is the location of your watermark on the x-axis relative to it's position on your video."></i>
+                                            </div>
+                                        </div>
                                         <input name="watermark-x-offset"
                                                type="number"
                                                min=-1
@@ -141,7 +232,14 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group" id="watermark-y-offset-group">
-                                        <label for="watermark-y-offset">Watermark y offset</label>
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <label for="watermark-y-offset">Watermark y offset</label>
+                                            </div>
+                                            <div class="col-2">
+                                                <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="The y-offset is the location of your watermark on the y-axis relative to it's position on your video."></i>
+                                            </div>
+                                        </div>
                                         <input name="watermark-y-offset"
                                                type="number"
                                                min=-1
@@ -161,7 +259,14 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group" id="watermark-opacity-group">
-                                        <label for="watermark-opacity">Watermark opacity</label>
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <label for="watermark-opacity">Watermark opacity</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="The transparency of your watermark."></i>
+                                            </div>
+                                        </div>
                                         <select name="watermark-opacity" id="watermark-opacity" class="custom-select advanced">
                                             <option value="">Choose...</option>
                                             <option value="0.1">10%</option>
@@ -208,11 +313,14 @@
                 <div id="json" class="row">
                     <div class="col">
                         <p>
-                            <a class="btn btn-primary" data-toggle="collapse" href="#jsonExpand" role="button" aria-expanded="false" aria-controls="jsonExpand">
+                            <a class="btn btn-primary" id="download" href="#" role="button">
+                                Download
+                            </a>
+                            <a class="btn btn-primary ml-2" data-toggle="collapse" href="#jsonExpand" role="button" aria-expanded="false" aria-controls="jsonExpand">
                                 Show JSON
                             </a>
                         </p>
-                        <div class="collapse" id="jsonExpand">
+                       <div class="collapse" id="jsonExpand">
                             <div class="card card-body"><pre><code class="json-container"></code></pre></div>
                         </div>
                     </div>
@@ -224,6 +332,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <script src="https://cdn.plyr.io/3.3.21/plyr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.4/umd/popper.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
