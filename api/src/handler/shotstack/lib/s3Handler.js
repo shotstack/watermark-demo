@@ -12,7 +12,6 @@ const s3 = new AWS.S3({
 });
 
 const uploadFile = (uuid, fileName) => {
-
     return new Promise((resolve, reject) => {
 
         if (!(path.extname(fileName) === 'mp4' || path.extname(fileName) === 'mov')) {
@@ -33,8 +32,5 @@ const uploadFile = (uuid, fileName) => {
             }
             resolve(data);
         })
-
-    }
-
-    
+    })
 }

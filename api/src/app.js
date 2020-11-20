@@ -12,26 +12,26 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname + '../../../web')));
 
 app.post('/demo/shotstack', async (req, res) => {
-	var json;
+    var json;
 
-	try {
-		json = await jc.createJson(req.body);
-	} catch(err) {
-		console.error(err);
-	}
+    try {
+        json = await jc.createJson(req.body);
+    } catch (err) {
+        console.error(err);
+    }
 
-	try {
-		let render = await shotstack.submit(json);
+    try {
+        let render = await shotstack.submit(json);
 
-		res.header("Access-Control-Allow-Origin", "*");
-		res.status(201);
-		res.send({status: 'success',message: 'OK',data: render.data});		
-	} catch(err) {
-		console.log(err)
-		res.header("Access-Control-Allow-Origin", "*");
-		res.status(400);
-		res.send({status: 'fail',message: 'bad request',data: err});		
-	}
+        res.header("Access-Control-Allow-Origin", "*");
+        res.status(201);
+        res.send({ status: 'success', message: 'OK', data: render.data });
+    } catch (err) {
+        console.log(err)
+        res.header("Access-Control-Allow-Origin", "*");
+        res.status(400);
+        res.send({ status: 'fail', message: 'bad request', data: err });
+    }
 
 });
 
@@ -41,11 +41,11 @@ app.get('/demo/shotstack/:renderId', async (req, res) => {
 
         res.header("Access-Control-Allow-Origin", "*");
         res.status(200);
-        res.send({status: 'success',message: 'OK',data: render.data.response});
+        res.send({ status: 'success', message: 'OK', data: render.data.response });
     } catch (err) {
         res.header("Access-Control-Allow-Origin", "*");
         res.status(400);
-        res.send({status: 'fail',message: 'bad request',data: err});
+        res.send({ status: 'fail', message: 'bad request', data: err });
     }
 });
 
