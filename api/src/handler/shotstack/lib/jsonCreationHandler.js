@@ -4,10 +4,10 @@ var createJson = function (body, duration) {
 
     return new Promise((resolve, reject) => {
 
-        var x;
-        var y;
-        var scale;
-        var opacity;
+        let x;
+        let y;
+        let scale;
+        let opacity;
 
         if (body.advanced == true) {
             x = parseFloat(body.offsetX),
@@ -51,7 +51,7 @@ var createJson = function (body, duration) {
         fs.readFile(__dirname + '/watermark.json', 'utf-8', function (err, data) {
             if (err) console.error(err);
 
-            var jsonParsed = JSON.parse(data);
+            let jsonParsed = JSON.parse(data);
 
             jsonParsed.timeline.tracks[0].clips[0].asset.src = body.watermark;
             jsonParsed.timeline.tracks[0].clips[0].length = parseFloat(body.duration);
@@ -63,7 +63,7 @@ var createJson = function (body, duration) {
             jsonParsed.timeline.tracks[1].clips[0].asset.src = body.video;
             jsonParsed.timeline.tracks[1].clips[0].length = parseFloat(body.duration);
 
-            var json = JSON.stringify(jsonParsed);
+            let json = JSON.stringify(jsonParsed);
 
             console.log(json);
 

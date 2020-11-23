@@ -11,7 +11,7 @@ module.exports.submit = async (event, context, callback) => {
 
     const data = JSON.parse(event.body);
 
-    var json;
+    let json;
 
     try {
         json = await jc.createJson(data);
