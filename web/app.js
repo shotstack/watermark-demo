@@ -1,4 +1,4 @@
-var apiEndpoint = 'https://7858zwls0f.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack'; //https://7858zwls0f.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack
+var apiEndpoint = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack';
 var progress = 0;
 var progressIncrement = 10;
 var pollIntervalSeconds = 10;
