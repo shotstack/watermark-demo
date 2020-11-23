@@ -51,19 +51,19 @@ var createJson = function (body, duration) {
         fs.readFile(__dirname + '/watermark.json', 'utf-8', function (err, data) {
             if (err) console.error(err);
 
-            var jj = JSON.parse(data);
+            var jsonParsed = JSON.parse(data);
 
-            jj.timeline.tracks[0].clips[0].asset.src = body.watermark;
-            jj.timeline.tracks[0].clips[0].length = parseFloat(body.duration);
-            jj.timeline.tracks[0].clips[0].position = body.position;
-            jj.timeline.tracks[0].clips[0].offset.x = x;
-            jj.timeline.tracks[0].clips[0].offset.y = y;
-            jj.timeline.tracks[0].clips[0].scale = scale;
-            jj.timeline.tracks[0].clips[0].opacity = opacity;
-            jj.timeline.tracks[1].clips[0].asset.src = body.video;
-            jj.timeline.tracks[1].clips[0].length = parseFloat(body.duration);
+            jsonParsed.timeline.tracks[0].clips[0].asset.src = body.watermark;
+            jsonParsed.timeline.tracks[0].clips[0].length = parseFloat(body.duration);
+            jsonParsed.timeline.tracks[0].clips[0].position = body.position;
+            jsonParsed.timeline.tracks[0].clips[0].offset.x = x;
+            jsonParsed.timeline.tracks[0].clips[0].offset.y = y;
+            jsonParsed.timeline.tracks[0].clips[0].scale = scale;
+            jsonParsed.timeline.tracks[0].clips[0].opacity = opacity;
+            jsonParsed.timeline.tracks[1].clips[0].asset.src = body.video;
+            jsonParsed.timeline.tracks[1].clips[0].length = parseFloat(body.duration);
 
-            var json = JSON.stringify(jj);
+            var json = JSON.stringify(jsonParsed);
 
             console.log(json);
 
