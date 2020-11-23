@@ -3,6 +3,7 @@
 const response = require('../shared/response');
 const shotstack = require('./lib/shotstackHandler');
 const jc = require('./lib/jsonCreationHandler');
+const s3 = require('./lib/s3Handler');
 
 module.exports.submit = async (event, context, callback) => {
 
@@ -38,5 +39,19 @@ module.exports.status = async (event, context, callback) => {
     } catch (err) {
         console.error('Fail: ', err);
         callback(null, response.format(400, 'fail', 'Bad Request', err));
+    }
+};
+
+module.exports.getPresignedPostData = async ({ body }) => {
+    try {
+        const { name } = JSON.parse(body);
+        const presignedPostData = await createPresignedPost({
+            key: `${uniqid()}_${name}`,
+            contentType: mime.getType(name)
+        });
+        callback(null, response.format(201, 'success', 'OK', presignedPostData));
+    } catch (err) {
+        console.error('Fail: ', err);
+        callback(null, response.format(500, 'fail', 'Bad Request', err));
     }
 };

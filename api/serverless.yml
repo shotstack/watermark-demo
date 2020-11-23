@@ -22,9 +22,9 @@ functions:
     memorySize: 128
     events:
       - http:
-          path: shotstack
-          method: post
-          cors: true
+        path: shotstack
+        method: post
+        cors: true
   status:
     handler: src/handler/shotstack/handler.status
     description: Demo - Watermarked video status check
@@ -32,9 +32,19 @@ functions:
     memorySize: 128
     events:
       - http:
-          path: shotstack/{id}
-          method: get
-          cors: true
+        path: shotstack/{id}
+        method: get
+        cors: true
+  getPresignedPostData:
+    handler: src/handler/shotstack/handler.getPresignedPostData
+    description: Demo - Get presigned url for asset upload
+    timeout: 15
+    memorySize: 128
+    events:
+      - http:
+        path: shotstack/url
+        method: post
+        cors: true
 
 plugins:
   - serverless-dotenv-plugin

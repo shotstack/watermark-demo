@@ -30,7 +30,8 @@ module.exports.format = (code, status, message, data) => {
     return {
         statusCode: parseInt(code),
         headers: {
-            'Access-Control-Allow-Origin' : '*'
+            'Access-Control-Allow-Origin' : '*',
+            "Access-Control-Allow-Credentials": true
         },
         body: JSON.stringify(this.getBody(status, message, data))
     };

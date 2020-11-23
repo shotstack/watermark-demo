@@ -1,36 +1,47 @@
-const fs = require('fs');
-const path = require('path');
-const AWS = require('aws-sdk');
+const S3 = require('aws-sdk/clients/s3');
+const uniqid = require("uniqid");
+const mime = require("mime");
 
-const awsId = process.env.AWS_ID;
-const awsSecret = process.env.AWS_SECRET;
 const awsBucket = process.env.AWS_BUCKET;
 
-const s3 = new AWS.S3({
-    accessKeyId: awsId,
-    secretAccessKey: awsSecret
-});
+/**
+ * Use AWS SDK to create pre-signed POST data.
+ * We also put a file size limit (1kB - 250MB).
+ * @param key
+ * @param contentType
+ * @returns {Promise<object>}
+ */
 
-const uploadFile = (uuid, fileName) => {
-    return new Promise((resolve, reject) => {
+const createPresignedPost = async (key, contentType) => {
+    const s3 = new S3();
 
-        if (!(path.extname(fileName) === 'mp4' || path.extname(fileName) === 'mov')) {
-            reject('invalid extension');
+    // const s3 = new S3({
+    //     accessKeyId: AWS_ID,
+    //     secretAccessKey: AWS_SECRET
+    // });
+
+    const params = {
+        Expires: 60,
+        Bucket: awsBucket,
+        Conditions: [["content-length-range", 1000, 2500000000]],
+        Fields: {
+            "Content-Type": contentType,
+            key
         }
+    }
 
-        const fileContent = fs.readFileSync(filename);
-
-        const params = {
-            Bucket: awsBucket,
-            Key: uuid + '.' + path.extname(filename),
-            Body: fileContent
-        }
-
-        s3.upload(params, function(err, data) {
+    return new Promise(async (resolve, reject) => {
+        s3.createPresignedPost(params, (err, data) => {
             if (err) {
                 reject(err);
+                return
             }
             resolve(data);
-        })
-    })
+        });
+    });
+
+};
+
+module.exports = {
+    createPresignedPost: createPresignedPost
 }
