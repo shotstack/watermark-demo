@@ -1,80 +1,80 @@
 const fs = require('fs');
 
-var createJson = function(body,duration){
+var createJson = function (body, duration) {
 
-	return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
 
-		var x;
-		var y;
-		var scale;
-		var opacity;
+        var x;
+        var y;
+        var scale;
+        var opacity;
 
-		if (body.advanced == true) {
-			x = parseFloat(body.offsetX),
-			y = parseFloat(body.offsetY),
-			scale = parseFloat(body.scale),
-			opacity = parseFloat(body.opacity)
-		} else {
-			scale = 1,
-			opacity = 0.5
+        if (body.advanced == true) {
+            x = parseFloat(body.offsetX),
+                y = parseFloat(body.offsetY),
+                scale = parseFloat(body.scale),
+                opacity = parseFloat(body.opacity)
+        } else {
+            scale = 1,
+                opacity = 0.5
 
-			if (body.position == 'topRight') {
+            if (body.position == 'topRight') {
 
-				x = -0.04;
-				y = -0.04;
+                x = -0.04;
+                y = -0.04;
 
-			} else if (body.position == 'topLeft') {
+            } else if (body.position == 'topLeft') {
 
-				x = 0.04;
-				y = -0.04;
+                x = 0.04;
+                y = -0.04;
 
-			} else if (body.position == 'bottomRight') {
+            } else if (body.position == 'bottomRight') {
 
-				x = -0.04;
-				y = 0.04;
+                x = -0.04;
+                y = 0.04;
 
-			} else if (body.position == 'bottomLeft') {
+            } else if (body.position == 'bottomLeft') {
 
-				x = 0.04;
-				y = 0.04;
+                x = 0.04;
+                y = 0.04;
 
-			}
+            }
 
-		}
+        }
 
-		console.log('x: ' + x);
-		console.log('y: ' + y);
-		console.log('scale: ' + scale);
-		console.log('opacity: ' + opacity);
+        console.log('x: ' + x);
+        console.log('y: ' + y);
+        console.log('scale: ' + scale);
+        console.log('opacity: ' + opacity);
         console.log('duration: ' + body.duration);
 
-		fs.readFile(__dirname+'/watermark.json','utf-8',function(err,data){
-			if (err) console.error(err);
+        fs.readFile(__dirname + '/watermark.json', 'utf-8', function (err, data) {
+            if (err) console.error(err);
 
-			var jj = JSON.parse(data);
+            var jj = JSON.parse(data);
 
-			jj.timeline.tracks[0].clips[0].asset.src = body.watermark;
+            jj.timeline.tracks[0].clips[0].asset.src = body.watermark;
             jj.timeline.tracks[0].clips[0].length = parseFloat(body.duration);
-			jj.timeline.tracks[0].clips[0].position = body.position;
-			jj.timeline.tracks[0].clips[0].offset.x = x;
-			jj.timeline.tracks[0].clips[0].offset.y = y;
-			jj.timeline.tracks[0].clips[0].scale = scale;
-			jj.timeline.tracks[0].clips[0].opacity = opacity;
-			jj.timeline.tracks[1].clips[0].asset.src = body.video;
+            jj.timeline.tracks[0].clips[0].position = body.position;
+            jj.timeline.tracks[0].clips[0].offset.x = x;
+            jj.timeline.tracks[0].clips[0].offset.y = y;
+            jj.timeline.tracks[0].clips[0].scale = scale;
+            jj.timeline.tracks[0].clips[0].opacity = opacity;
+            jj.timeline.tracks[1].clips[0].asset.src = body.video;
             jj.timeline.tracks[1].clips[0].length = parseFloat(body.duration);
 
-			var json = JSON.stringify(jj);
+            var json = JSON.stringify(jj);
 
-			console.log(json);
+            console.log(json);
 
-			return resolve(json);
+            return resolve(json);
 
-		});
+        });
 
-	});
+    });
 
 }
 
 module.exports = {
-	createJson: createJson
+    createJson: createJson
 }
