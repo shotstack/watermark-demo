@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css" integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css" integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.3.21/plyr.css">
@@ -48,10 +48,11 @@
                                 <div class="row mb-3 mx-1" id="video-toggle">
                                     <div id="video_toggle_upload" class="col-6 border p-0">
                                         <button type="button" class="btn btn-secondary w-100 h-100"disabled>
+                                            <span id="video-loading-image" class="spinner-border d-none" role="status" aria-hidden="true"></span>
                                             <label class="d-inline w-100 h-100" for="video-upload">
-                                                <i class="fas fa-upload fa-2x w-100"></i>
+                                                <i id="video-upload-icon" class="fas fa-upload fa-2x w-100"></i>
                                             </label>
-                                            <input name="video-upload" class="d-none" type="file" id="video-upload" disabled/>
+                                            <input name="video-upload" class="d-none" type="file" id="video-upload"/>
                                         </button>
                                     </div>
                                     <div id="video_toggle_url" class="col-6 text-center border p-0">
@@ -71,6 +72,16 @@
                                        maxlength="300"
                                        required
                                 >
+                                <div class="row my-2 d-none"  id="video-file">
+                                    <div class="col-10 name">
+                                        Test
+                                    </div>
+                                    <div class="col-2 icon">
+                                        <button type="button" class="btn btn-danger float-right">
+                                            <i class="fas fa-trash float-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -88,6 +99,7 @@
                                 <div class="row mb-3 mx-1" id="watermark-toggle">
                                     <div id="watermark_toggle_upload" class="col-6 border p-0">
                                         <button type="button" class="btn btn-secondary w-100 h-100"disabled>
+                                            <span id="watermark-loading-image" class="spinner-border d-none" role="status" aria-hidden="true"></span>
                                             <label class="d-inline w-100 h-100" for="watermark-upload">
                                                 <i class="fas fa-upload fa-2x w-100"></i>
                                             </label>
@@ -111,6 +123,10 @@
                                        maxlength="300"
                                        required
                                 >
+                                 <i class="fas fa-cross fa-2x"></i>
+                                <span id="watermark-file">
+                                    <i class="fas fa-trash float-right"></i>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -336,7 +352,7 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.plyr.io/3.3.21/plyr.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.4/umd/popper.min.js"></script>
     <script src="app.js"></script>

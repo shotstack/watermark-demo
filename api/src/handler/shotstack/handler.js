@@ -42,13 +42,11 @@ module.exports.status = async (event, context, callback) => {
     }
 };
 
-module.exports.getPresignedPostData = async ({ body }) => {
+module.exports.getPresignedPostData = async (event, context, callback) => {
+    const data = JSON.parse(event.body);
     try {
-        const { name } = JSON.parse(body);
-        const presignedPostData = await createPresignedPost({
-            key: `${uniqid()}_${name}`,
-            contentType: mime.getType(name)
-        });
+        const presignedPostData = await s3.createPresignedPost(data.name, data.type);
+        console.log(presignedPostData);
         callback(null, response.format(201, 'success', 'OK', presignedPostData));
     } catch (err) {
         console.error('Fail: ', err);

@@ -5,6 +5,11 @@ provider:
   runtime: nodejs10.x
   stage: demo
   region: ap-southeast-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: arn:aws:s3:::shotstack-demo-storage/*
 
 package:
   exclude:
@@ -41,6 +46,10 @@ functions:
     timeout: 15
     memorySize: 128
     events:
+      - s3:
+          bucket: shotstack-demo-storage
+          event: s3:ObjectCreated:*
+          existing: true
       - http:
           path: shotstack/url
           method: post

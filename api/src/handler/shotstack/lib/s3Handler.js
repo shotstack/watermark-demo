@@ -1,6 +1,7 @@
 const S3 = require('aws-sdk/clients/s3');
 const uniqid = require("uniqid");
 const mime = require("mime");
+const axios = require('axios').default;
 
 const awsBucket = process.env.AWS_BUCKET;
 
@@ -13,20 +14,19 @@ const awsBucket = process.env.AWS_BUCKET;
  */
 
 const createPresignedPost = async (key, contentType) => {
-    const s3 = new S3();
 
-    // const s3 = new S3({
-    //     accessKeyId: AWS_ID,
-    //     secretAccessKey: AWS_SECRET
-    // });
+    console.log(key);
+    console.log(contentType);
+
+    const s3 = new S3();
 
     const params = {
         Expires: 60,
         Bucket: awsBucket,
-        Conditions: [["content-length-range", 1000, 2500000000]],
+        Conditions: [["content-length-range", 10, 2500000000]],
         Fields: {
             "Content-Type": contentType,
-            key
+            key: key
         }
     }
 
@@ -42,6 +42,23 @@ const createPresignedPost = async (key, contentType) => {
 
 };
 
+const probeVideo = async (url) => {
+
+    return new Promise((resolve, reject) => {
+        axios({
+            method: 'post',
+            url: 'https://api.shotstack.io/dev/probe/'+url
+        })
+        .then((response) => {
+            return resolve(response)
+        }, (error) => {
+            return reject(error)
+        });
+    })
+
+}
+
 module.exports = {
-    createPresignedPost: createPresignedPost
+    createPresignedPost: createPresignedPost,
+    probeVideo: probeVideo
 }

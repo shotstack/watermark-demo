@@ -1,4 +1,5 @@
 var apiEndpoint = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack';
+var urlEndpoint = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack/url';
 var progress = 0;
 var progressIncrement = 10;
 var pollIntervalSeconds = 10;
@@ -47,7 +48,7 @@ function initialiseVideo(src) {
  */
 function pollVideoStatus(id) {
     $.get(apiEndpoint + '/' + id, function(response) {
-        let res = response.data.response;
+        var res = response.data.response;
         updateStatus(res.status);
         if (!(res.status === 'done' || res.status === 'failed')) {
             setTimeout(function () {
@@ -212,7 +213,7 @@ function submitVideoEdit() {
             pollVideoStatus(response.data.response.id);
         }
     }).fail(function(error) {
-        displayError(error);
+        displayError({status: 400, });
         $('#submit-video').prop('disabled', false);
     });
 }
@@ -280,7 +281,7 @@ $('#advanced-checkbox').click(function(e){
     }
 });
 
-$(('#video_toggle_url')).click(function(e){
+$('#video_toggle_url').click(function(e){
 
     $('#video-url').slideToggle('fast', function(){
         if($("#video-url").is(":hidden")){
@@ -298,7 +299,7 @@ $(('#video_toggle_url')).click(function(e){
 
 });
 
-$(('#watermark_toggle_url')).click(function(e){
+$('#watermark_toggle_url').click(function(e){
 
     $('#watermark_url').slideToggle('fast', function(){
         if($("#watermark_url").is(":hidden")){
@@ -315,6 +316,111 @@ $(('#watermark_toggle_url')).click(function(e){
     });
 
 });
+
+$(document).on('change','#video-upload', function(e){
+
+    if (e.target.files[0].size > 250000000) {
+        $('#search-group label, #search').addClass('text-danger is-invalid');
+        $('#search-group').append('<div class="d-block invalid-feedback">Video file too large. Please keep under 250MB.</div>').show();
+    }
+
+    var name = e.target.files[0].name;
+    var type = e.target.files[0].type;
+
+    getPresignedPostData(name, type, function(data){
+        console.log(data);
+        console.log($('#video-upload')[0].files[0]);
+        uploadFile($('#video-upload')[0].files[0],data, 'video');
+    })
+
+})
+
+$(document).on('change','#watermark-upload', function(e){
+
+    if (e.target.files[0].size > 250000000) {
+        $('#search-group label, #search').addClass('text-danger is-invalid');
+        $('#search-group').append('<div class="d-block invalid-feedback">Video file too large. Please keep under 250MB.</div>').show();
+    }
+
+    var name = e.target.files[0].name;
+    var type = e.target.files[0].type;
+
+    getPresignedPostData(name, type, function(data){
+        console.log(data);
+        console.log($('#video-upload')[0].files[0]);
+        uploadFile($('#video-upload')[0].files[0],data, 'watermark');
+    })
+
+})
+
+function uploadFile(file, presignedPostData, asset) {
+
+    var formData = new FormData();
+
+    Object.keys(presignedPostData.fields).forEach(key => {
+        formData.append(key, presignedPostData.fields[key]);
+    });    
+
+    formData.append('file', file);
+
+    for (var key of formData.entries()) {
+        console.log(key[0] + ', ' + key[1]);
+    }
+
+    $('#'+asset+'-loading-image').removeClass('d-none');
+    $('#'+asset+'-upload-icon').addClass('d-none');
+
+    $.ajax({
+        url: presignedPostData.url,
+        method: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false
+    }).done(function(response, statusText, xhr) {
+        $('#'+asset+'-loading-image').addClass('d-none');
+        $('#'+asset+'-upload-icon').removeClass('d-none');
+        console.log(response);
+        if (xhr.status == 204) {
+            $('#' + asset + '-file').removeClass('d-none');
+            $('#' + asset + '-file .name').text(presignedPostData.fields['key']);
+        } else {
+            displayError({status: xhr.status, });
+        }
+    }).fail(function(error) {
+        console.log(error);
+        displayError({status: 400, });
+    });
+
+}
+
+function getPresignedPostData(name, type, callback) {
+
+    var formData = new FormData();
+
+    var formData = {
+        'name': name,
+        'type': type
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: urlEndpoint,
+        data: JSON.stringify(formData),
+        dataType: 'json',
+        crossDomain: true,
+        contentType: 'application/json'
+    }).done(function(response) {
+        if (response.status !== 'success') {
+            displayError(response.message);
+        } else {
+            callback(response.data);
+        }
+        
+    }).fail(function(error) {
+        displayError({status: 400, });
+    });
+
+}
 
 $('[data-toggle="tooltip"]').tooltip({ trigger: 'click' });
 
