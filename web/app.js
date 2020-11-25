@@ -1,4 +1,5 @@
 var apiEndpoint = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack';
+var urlEndpoint = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack/url';
 var progress = 0;
 var progressIncrement = 10;
 var pollIntervalSeconds = 10;
@@ -47,7 +48,7 @@ function initialiseVideo(src) {
  */
 function pollVideoStatus(id) {
     $.get(apiEndpoint + '/' + id, function(response) {
-        let res = response.data.response;
+        var res = response.data.response;
         updateStatus(res.status);
         if (!(res.status === 'done' || res.status === 'failed')) {
             setTimeout(function () {
@@ -153,7 +154,7 @@ function displayError(error) {
 function resetErrors() {
     $('input, label, select').removeClass('text-danger is-invalid');
     $('.invalid-feedback').remove();
-    $('#errors').text('').removeClass('d-block').addClass('d-hide');
+    $('#errors').text('').removeClass('d-block').addClass('d-none');
 }
 
 /**
@@ -162,6 +163,7 @@ function resetErrors() {
 function resetForm() {
     $('form').trigger("reset");
     $('#submit-video').prop('disabled', false);
+    removeFile($('.remove-file'));
 }
 
 /**
@@ -185,9 +187,9 @@ function resetVideo() {
 function submitVideoEdit() {
     updateStatus('submitted');
 
+    var val = validateToggleButtons();
+
     var formData = {
-        'video': $('#video-url').val(),
-        'watermark': $('#watermark_url').val(),
         'position': $('#position option:selected').val(),
         'advanced': $('#advanced-checkbox').is(':checked'),
         'scale': $('#watermark-scale option:selected').val(),
@@ -196,6 +198,20 @@ function submitVideoEdit() {
         'opacity': $('#watermark-opacity option:selected').val(),
         'duration': $('#clip-length').val()
     };
+
+    var s3Bucket = 'https://shotstack-demo-storage.s3-ap-southeast-2.amazonaws.com/'
+
+    if (val.video == 'url') {
+        formData['video'] = $('#video-url').val();
+    } else {
+        formData['video'] = s3Bucket+$('#video-file .name').attr("data-file");
+    }
+
+    if (val.watermark == 'url') {
+        formData['watermark'] = $('#watermark-url').val();
+    } else {
+        formData['watermark'] = s3Bucket+$('#watermark-file .name').attr("data-file");
+    }
 
     $.ajax({
         type: 'POST',
@@ -212,7 +228,7 @@ function submitVideoEdit() {
             pollVideoStatus(response.data.response.id);
         }
     }).fail(function(error) {
-        displayError(error);
+        displayError({status: 400, });
         $('#submit-video').prop('disabled', false);
     });
 }
@@ -267,7 +283,7 @@ function initialiseDownload(url) {
     $('#download').attr("href", url);
 }
 
-$('#advanced-checkbox').click(function(e){
+$(document).on('click','#advanced-checkbox',function(e){
     
     if($('#advanced-checkbox').is(':checked')){
         $('#advanced').slideDown('fast');
@@ -278,51 +294,156 @@ $('#advanced-checkbox').click(function(e){
         $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-down float-right');
         $(('input.advanced') && ('select.advanced')).removeAttr('required');
     }
+
 });
 
-$(('#video_toggle_url')).click(function(e){
+$(document).on('click', '.url-button', function(e){
 
-    $('#video-url').slideToggle('fast', function(){
-        if($("#video-url").is(":hidden")){
-            $('#video_toggle_url button').removeClass('btn-primary');
-            $('#video_toggle_url button').addClass('btn-secondary');
-            $('#video-upload').prop('required',true);
-            $('#video-url').removeAttr('required');
-        } else{
-            $('#video_toggle_url button').addClass('btn-primary');
-            $('#video_toggle_url button').removeClass('btn-secondary');
-            $('#video-upload').removeAttr('required');
-            $('#video-url').prop('required',true);
+    var videoUrl = $(this).closest('.toggle').siblings('.input-url');
+    var button = $(this);
+    var downloadButton = $(this).closest('.toggle').find('.upload-button');
+
+    videoUrl.slideToggle('fast', function(){
+        if (videoUrl.is(':hidden')) {
+            button.removeClass('btn-primary').addClass('btn-secondary');
+            videoUrl.removeAttr('required');
+            videoUrl.siblings('.upload').prop('required', true);
+            downloadButton.prop('disabled', false);
+        } else {
+            button.addClass('btn-primary').removeClass('btn-secondary');
+            videoUrl.prop('required', true);
+            videoUrl.siblings('.upload').removeAttr('required');
+            downloadButton.prop('disabled', true);
         }
+    });
+
+    
+})
+
+$(document).on('click','.upload-button',function(e){
+    e.preventDefault();
+    $(this).closest('.toggle').siblings('.upload').prop('required',true);
+    $(this).closest('.toggle').siblings('.upload').click();
+});
+
+$(document).on('click','.remove-file',function(e){
+    removeFile($(this));
+});
+
+function removeFile(thisObj){
+    thisObj.closest('div').siblings('.name').empty();
+    thisObj.closest('div').siblings('.name').removeAttr('data-file');
+    thisObj.closest('.file-placeholder').addClass('d-none');
+    thisObj.closest('.file-placeholder').siblings('.toggle').find('.upload-button').removeClass('btn-primary').addClass('btn-secondary');
+    thisObj.closest('.file-placeholder').siblings('.toggle').find('.url-button').prop('disabled', false);
+}
+
+$(document).on('change','.upload', function(e){
+
+    var name = e.target.files[0].name;
+    var type = e.target.files[0].type;
+
+    getPresignedPostData(name, type, function(data){
+        uploadFile(e.target.files[0],data,e.target);
     });
 
 });
 
-$(('#watermark_toggle_url')).click(function(e){
+function uploadFile(file, presignedPostData, thisObj) {
 
-    $('#watermark_url').slideToggle('fast', function(){
-        if($("#watermark_url").is(":hidden")){
-            $('#watermark_toggle_url button').removeClass('btn-primary');
-            $('#watermark_toggle_url button').addClass('btn-secondary');
-            $('#watermark-upload').prop('required',true);
-            $('#watermark-url').removeAttr('required');
-        } else{
-            $('#watermark_toggle_url button').addClass('btn-primary');
-            $('#watermark_toggle_url button').removeClass('btn-secondary');
-            $('#watermark-upload').removeAttr('required');
-            $('#watermark-url').prop('required',true);
+    var formData = new FormData();
+
+    Object.keys(presignedPostData.fields).forEach(key => {
+        formData.append(key, presignedPostData.fields[key]);
+    });    
+
+    formData.append('file', file);
+
+    $(thisObj).siblings('.toggle').find('.loading-image').removeClass('d-none');
+    $(thisObj).siblings('.toggle').find('.upload-icon').addClass('d-none');
+
+    $.ajax({
+        url: presignedPostData.url,
+        method: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false
+    }).done(function(response, statusText, xhr) {
+        $(thisObj).siblings('.toggle').find('.loading-image').addClass('d-none');
+        $(thisObj).siblings('.toggle').find('.upload-icon').removeClass('d-none');
+        if (xhr.status == 204) {
+            $(thisObj).siblings('.file-placeholder').removeClass('d-none');
+            $(thisObj).siblings('.file-placeholder').children('.name').text(file.name);
+            $(thisObj).siblings('.file-placeholder').children('.name').attr('data-file', presignedPostData.fields['key']);
+            $(thisObj).siblings('.toggle').find('.upload-button').addClass('btn-primary').removeClass('btn-secondary');
+            $(thisObj).siblings('.toggle').find('.url-button').prop('disabled', true);
+        } else {
+            console.log(xhr.status);
         }
+    }).fail(function(error) {
+        console.log(error);
     });
 
-});
+}
+
+function getPresignedPostData(name, type, callback) {
+
+    var formData = new FormData();
+
+    var formData = {
+        'name': name,
+        'type': type
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: urlEndpoint,
+        data: JSON.stringify(formData),
+        dataType: 'json',
+        crossDomain: true,
+        contentType: 'application/json'
+    }).done(function(response) {
+        if (response.status !== 'success') {
+            displayError(response.message);
+        } else {
+            callback(response.data);
+        }
+        
+    }).fail(function(error) {
+        displayError({status: 400, });
+    });
+
+}
+
+function validateToggleButtons(){
+    var buttonActivation = {number: 0, video: null, watermark: null};
+    $('.toggle-button').each(function(index){
+        var sub = $(this)[0].parentElement.id.split('-')[0];
+        var type = $(this)[0].parentElement.id.split('-')[2];
+        $.map($(this)[0].classList, function(value, index){
+            if (value == 'btn-primary' && sub == 'video') {
+                buttonActivation.number++;
+                buttonActivation.video = type;
+            } else if (value == 'btn-primary' && sub == 'watermark') {
+                buttonActivation.number++;
+                buttonActivation.watermark = type;
+            }
+        })
+    });
+    return buttonActivation;
+}
 
 $('[data-toggle="tooltip"]').tooltip({ trigger: 'click' });
 
 $(document).ready(function() {
     $('form').submit(function(event) {
-        resetErrors();
-        resetVideo();
-        submitVideoEdit();
+        if (validateToggleButtons().number == 2) {
+            resetErrors();
+            resetVideo();
+            submitVideoEdit();
+        } else {
+            $('#errors').removeClass('d-none').text('Please select both a video and a watermark.')
+        }
 
         event.preventDefault();
     });

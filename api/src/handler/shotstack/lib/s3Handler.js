@@ -1,36 +1,63 @@
-const fs = require('fs');
-const path = require('path');
-const AWS = require('aws-sdk');
+const S3 = require('aws-sdk/clients/s3');
+const mime = require("mime");
+const axios = require('axios').default;
 
-const awsId = process.env.AWS_ID;
-const awsSecret = process.env.AWS_SECRET;
 const awsBucket = process.env.AWS_BUCKET;
 
-const s3 = new AWS.S3({
-    accessKeyId: awsId,
-    secretAccessKey: awsSecret
-});
+/**
+ * Use AWS SDK to create pre-signed POST data.
+ * We also put a file size limit (1kB - 250MB).
+ * @param key
+ * @param contentType
+ * @returns {Promise<object>}
+ */
 
-const uploadFile = (uuid, fileName) => {
-    return new Promise((resolve, reject) => {
+const createPresignedPost = async (key, contentType) => {
 
-        if (!(path.extname(fileName) === 'mp4' || path.extname(fileName) === 'mov')) {
-            reject('invalid extension');
+    console.log(key);
+    console.log(contentType);
+
+    const s3 = new S3();
+
+    const params = {
+        Expires: 60,
+        Bucket: awsBucket,
+        Conditions: [["content-length-range", 10, 2500000000]],
+        Fields: {
+            "Content-Type": contentType,
+            key: key
         }
+    }
 
-        const fileContent = fs.readFileSync(filename);
-
-        const params = {
-            Bucket: awsBucket,
-            Key: uuid + '.' + path.extname(filename),
-            Body: fileContent
-        }
-
-        s3.upload(params, function(err, data) {
+    return new Promise(async (resolve, reject) => {
+        s3.createPresignedPost(params, (err, data) => {
             if (err) {
                 reject(err);
+                return
             }
             resolve(data);
+        });
+    });
+
+};
+
+const probeVideo = async (url) => {
+
+    return new Promise((resolve, reject) => {
+        axios({
+            method: 'post',
+            url: 'https://api.shotstack.io/dev/probe/'+url
         })
+        .then((response) => {
+            return resolve(response)
+        }, (error) => {
+            return reject(error)
+        });
     })
+
+}
+
+module.exports = {
+    createPresignedPost: createPresignedPost,
+    probeVideo: probeVideo
 }
