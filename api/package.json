@@ -7,8 +7,6 @@
     "axios": "^0.21.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mime": "^2.4.6",
-    "serverless-dotenv-plugin": "^3.1.0",
-    "uniqid": "^5.2.0"
+    "serverless-dotenv-plugin": "^3.1.0"
   }
 }

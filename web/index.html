@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css" integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css" integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.3.21/plyr.css">
@@ -42,41 +42,35 @@
                                         <h5>Video</h5>
                                     </div>
                                     <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Maximum upload size of 250MB"></i>
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Please keep your video file under 250MB. Upload functionality is coming soon."></i>
                                     </div>
                                 </div>
-                                <div class="row mb-3 mx-1 toggle" id="video-toggle">
-                                    <div id="video-toggle-upload" class="col-6 border p-0 upload-toggle toggle-button-container">
-                                        <button type="button" class="btn btn-secondary w-100 h-100 p-0 upload-button toggle-button">
-                                            <span id="video-loading-image" class="spinner-border d-none loading-image" role="status" aria-hidden="true"></span>
-                                            <i id="video-upload-icon" class="fas fa-upload fa-2x w-100 upload-icon"></i>
+                                <div class="row mb-3 mx-1" id="video-toggle">
+                                    <div id="video_toggle_upload" class="col-6 border p-0">
+                                        <button type="button" class="btn btn-secondary w-100 h-100"disabled>
+                                            <label class="d-inline w-100 h-100" for="video-upload">
+                                                <i class="fas fa-upload fa-2x w-100"></i>
+                                            </label>
+                                            <input name="video-upload" class="d-none" type="file" id="video-upload" disabled/>
                                         </button>
                                     </div>
-                                    <div id="video-toggle-url" class="col-6 text-center border p-0 url-toggle toggle-button-container">
-                                        <button type="button" class="btn btn-secondary w-100 h-100 p-0 url-button toggle-button">
+                                    <div id="video_toggle_url" class="col-6 text-center border p-0">
+                                        <button type="button" class="btn btn-secondary w-100 h-100">
                                             <i class="fas fa-link fa-2x w-100"></i>
                                         </button>
                                     </div>
                                 </div>
-                                <input name="video-upload" class="d-none upload" type="file" id="video-upload"/>
                                 <input name="video-url"
                                        type="url"
                                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
                                        oninvalid="setCustomValidity('Only valid URLs are allowed')"
                                        oninput="setCustomValidity('')"
-                                       class="form-control input-url"
+                                       class="form-control"
                                        id="video-url"
                                        placeholder="Link to the video you want watermarked"
                                        maxlength="300"
+                                       required
                                 >
-                                <div class="row my-2 d-none file-placeholder"  id="video-file">
-                                    <div class="col-10 name"></div>
-                                    <div class="col-2 icon">
-                                        <button id="video-trash" type="button" class="btn btn-danger float-right remove-file">
-                                            <i class="fas fa-trash float-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -88,41 +82,35 @@
                                         <h5>Watermark</h5>
                                     </div>
                                     <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can use either a video or an image as your watermark. Maximum upload size of 250MB"></i>
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can use either a video or an image as your watermark. Upload functionality is coming soon."></i>
                                     </div>
                                 </div>                                
-                                <div class="row mb-3 mx-1 toggle" id="watermark-toggle">
-                                    <div id="watermark-toggle-upload" class="col-6 border p-0 upload-toggle toggle-button-container">
-                                        <button type="button" class="btn btn-secondary w-100 h-100 p-0 upload-button toggle-button">
-                                            <span id="watermark-loading-image" class="spinner-border d-none loading-image" role="status" aria-hidden="true"></span>
-                                            <i id="watermark-upload-icon" class="fas fa-upload fa-2x w-100 upload-icon"></i>
+                                <div class="row mb-3 mx-1" id="watermark-toggle">
+                                    <div id="watermark_toggle_upload" class="col-6 border p-0">
+                                        <button type="button" class="btn btn-secondary w-100 h-100"disabled>
+                                            <label class="d-inline w-100 h-100" for="watermark-upload">
+                                                <i class="fas fa-upload fa-2x w-100"></i>
+                                            </label>
+                                            <input name="watermark-upload" class="d-none" type="file" id="watermark-upload" disabled/>
                                         </button>
                                     </div>
-                                    <div id="watermark-toggle-url" class="col-6 text-center border p-0 url-toggle toggle-button-container">
-                                        <button type="button" class="btn btn-secondary w-100 h-100 url-button toggle-button">
+                                    <div id="watermark_toggle_url" class="col-6 text-center border p-0">
+                                        <button type="button" class="btn btn-secondary w-100 h-100">
                                             <i class="fas fa-link fa-2x w-100"></i>
                                         </button>
                                     </div>
                                 </div>
-                                <input name="watermark-upload" class="d-none upload" type="file" id="watermark-upload"/>
                                 <input name="watermark-url"
                                        type="url"
                                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
                                        oninvalid="setCustomValidity('Only valid URLs are allowed')"
                                        oninput="setCustomValidity('')"
-                                       class="form-control input-url"
-                                       id="watermark-url"
+                                       class="form-control"
+                                       id="watermark_url"
                                        placeholder="Link to your video or image watermark"
                                        maxlength="300"
+                                       required
                                 >
-                                <div class="row my-2 d-none file-placeholder"  id="watermark-file">
-                                    <div class="col-10 name"></div>
-                                    <div class="col-2 icon">
-                                        <button type="button" class="btn btn-danger float-right remove-file">
-                                            <i class="fas fa-trash float-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -348,7 +336,7 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <script src="https://cdn.plyr.io/3.3.21/plyr.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.4/umd/popper.min.js"></script>
     <script src="app.js"></script>
