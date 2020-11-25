@@ -4,6 +4,7 @@ const response = require('../shared/response');
 const shotstack = require('./lib/shotstackHandler');
 const jc = require('./lib/jsonCreationHandler');
 const s3 = require('./lib/s3Handler');
+const uniqid = require("uniqid");
 
 module.exports.submit = async (event, context, callback) => {
 
@@ -45,7 +46,7 @@ module.exports.status = async (event, context, callback) => {
 module.exports.getPresignedPostData = async (event, context, callback) => {
     const data = JSON.parse(event.body);
     try {
-        const presignedPostData = await s3.createPresignedPost(data.name, data.type);
+        const presignedPostData = await s3.createPresignedPost(uniqid()+'-'+data.name, data.type);
         console.log(presignedPostData);
         callback(null, response.format(201, 'success', 'OK', presignedPostData));
     } catch (err) {

@@ -1,5 +1,4 @@
 const S3 = require('aws-sdk/clients/s3');
-const uniqid = require("uniqid");
 const mime = require("mime");
 const axios = require('axios').default;
 

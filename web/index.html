@@ -42,42 +42,37 @@
                                         <h5>Video</h5>
                                     </div>
                                     <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Please keep your video file under 250MB. Upload functionality is coming soon."></i>
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Maximum upload size of 250MB"></i>
                                     </div>
                                 </div>
-                                <div class="row mb-3 mx-1" id="video-toggle">
-                                    <div id="video_toggle_upload" class="col-6 border p-0">
-                                        <button type="button" class="btn btn-secondary w-100 h-100"disabled>
-                                            <span id="video-loading-image" class="spinner-border d-none" role="status" aria-hidden="true"></span>
-                                            <label class="d-inline w-100 h-100" for="video-upload">
-                                                <i id="video-upload-icon" class="fas fa-upload fa-2x w-100"></i>
-                                            </label>
-                                            <input name="video-upload" class="d-none" type="file" id="video-upload"/>
+                                <div class="row mb-3 mx-1 toggle" id="video-toggle">
+                                    <div id="video-toggle-upload" class="col-6 border p-0 upload-toggle toggle-button-container">
+                                        <button type="button" class="btn btn-secondary w-100 h-100 p-0 upload-button toggle-button">
+                                            <span id="video-loading-image" class="spinner-border d-none loading-image" role="status" aria-hidden="true"></span>
+                                            <i id="video-upload-icon" class="fas fa-upload fa-2x w-100 upload-icon"></i>
                                         </button>
                                     </div>
-                                    <div id="video_toggle_url" class="col-6 text-center border p-0">
-                                        <button type="button" class="btn btn-secondary w-100 h-100">
+                                    <div id="video-toggle-url" class="col-6 text-center border p-0 url-toggle toggle-button-container">
+                                        <button type="button" class="btn btn-secondary w-100 h-100 p-0 url-button toggle-button">
                                             <i class="fas fa-link fa-2x w-100"></i>
                                         </button>
                                     </div>
                                 </div>
+                                <input name="video-upload" class="d-none upload" type="file" id="video-upload"/>
                                 <input name="video-url"
                                        type="url"
                                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
                                        oninvalid="setCustomValidity('Only valid URLs are allowed')"
                                        oninput="setCustomValidity('')"
-                                       class="form-control"
+                                       class="form-control input-url"
                                        id="video-url"
                                        placeholder="Link to the video you want watermarked"
                                        maxlength="300"
-                                       required
                                 >
-                                <div class="row my-2 d-none"  id="video-file">
-                                    <div class="col-10 name">
-                                        Test
-                                    </div>
+                                <div class="row my-2 d-none file-placeholder"  id="video-file">
+                                    <div class="col-10 name"></div>
                                     <div class="col-2 icon">
-                                        <button type="button" class="btn btn-danger float-right">
+                                        <button id="video-trash" type="button" class="btn btn-danger float-right remove-file">
                                             <i class="fas fa-trash float-right"></i>
                                         </button>
                                     </div>
@@ -93,40 +88,41 @@
                                         <h5>Watermark</h5>
                                     </div>
                                     <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can use either a video or an image as your watermark. Upload functionality is coming soon."></i>
+                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can use either a video or an image as your watermark. Maximum upload size of 250MB"></i>
                                     </div>
                                 </div>                                
-                                <div class="row mb-3 mx-1" id="watermark-toggle">
-                                    <div id="watermark_toggle_upload" class="col-6 border p-0">
-                                        <button type="button" class="btn btn-secondary w-100 h-100"disabled>
-                                            <span id="watermark-loading-image" class="spinner-border d-none" role="status" aria-hidden="true"></span>
-                                            <label class="d-inline w-100 h-100" for="watermark-upload">
-                                                <i class="fas fa-upload fa-2x w-100"></i>
-                                            </label>
-                                            <input name="watermark-upload" class="d-none" type="file" id="watermark-upload" disabled/>
+                                <div class="row mb-3 mx-1 toggle" id="watermark-toggle">
+                                    <div id="watermark-toggle-upload" class="col-6 border p-0 upload-toggle toggle-button-container">
+                                        <button type="button" class="btn btn-secondary w-100 h-100 p-0 upload-button toggle-button">
+                                            <span id="watermark-loading-image" class="spinner-border d-none loading-image" role="status" aria-hidden="true"></span>
+                                            <i id="watermark-upload-icon" class="fas fa-upload fa-2x w-100 upload-icon"></i>
                                         </button>
                                     </div>
-                                    <div id="watermark_toggle_url" class="col-6 text-center border p-0">
-                                        <button type="button" class="btn btn-secondary w-100 h-100">
+                                    <div id="watermark-toggle-url" class="col-6 text-center border p-0 url-toggle toggle-button-container">
+                                        <button type="button" class="btn btn-secondary w-100 h-100 url-button toggle-button">
                                             <i class="fas fa-link fa-2x w-100"></i>
                                         </button>
                                     </div>
                                 </div>
+                                <input name="watermark-upload" class="d-none upload" type="file" id="watermark-upload"/>
                                 <input name="watermark-url"
                                        type="url"
                                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
                                        oninvalid="setCustomValidity('Only valid URLs are allowed')"
                                        oninput="setCustomValidity('')"
-                                       class="form-control"
-                                       id="watermark_url"
+                                       class="form-control input-url"
+                                       id="watermark-url"
                                        placeholder="Link to your video or image watermark"
                                        maxlength="300"
-                                       required
                                 >
-                                 <i class="fas fa-cross fa-2x"></i>
-                                <span id="watermark-file">
-                                    <i class="fas fa-trash float-right"></i>
-                                </span>
+                                <div class="row my-2 d-none file-placeholder"  id="watermark-file">
+                                    <div class="col-10 name"></div>
+                                    <div class="col-2 icon">
+                                        <button type="button" class="btn btn-danger float-right remove-file">
+                                            <i class="fas fa-trash float-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
