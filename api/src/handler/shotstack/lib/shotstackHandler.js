@@ -35,7 +35,7 @@ var status = function(id) {
             }
         })
         .then((response) => {
-            return resolve(response);
+            return resolve(response.data.response);
         }), (error) => {
             return reject(error);
         }
