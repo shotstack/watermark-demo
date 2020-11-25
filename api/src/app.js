@@ -37,11 +37,11 @@ app.post('/demo/shotstack', async (req, res) => {
 
 app.get('/demo/shotstack/:renderId', async (req, res) => {
     try {
-        let render = await shotstack.status(req.params.renderId);
+        let status = await shotstack.status(req.params.renderId);
 
         res.header("Access-Control-Allow-Origin", "*");
         res.status(200);
-        res.send({ status: 'success', message: 'OK', data: render.data.response });
+        res.send({ status: 'success', message: 'OK', data: status });
     } catch (err) {
         res.header("Access-Control-Allow-Origin", "*");
         res.status(400);

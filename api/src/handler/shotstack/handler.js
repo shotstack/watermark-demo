@@ -34,9 +34,9 @@ module.exports.submit = async (event, context, callback) => {
 
 module.exports.status = async (event, context, callback) => {
     try {
-        let res = await shotstack.status(event.pathParameters.id);
+        let status = await shotstack.status(event.pathParameters.id);
         console.log('Poll success');
-        callback(null, response.format(201, 'success', 'OK', res.data));
+        callback(null, response.format(201, 'success', 'OK', status));
     } catch (err) {
         console.error('Fail: ', err);
         callback(null, response.format(400, 'fail', 'Bad Request', err));
