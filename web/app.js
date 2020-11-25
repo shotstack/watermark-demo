@@ -57,6 +57,7 @@ function pollVideoStatus(id) {
         } else {
             initialiseVideo(response.data.url);
             initialiseJson(response.data.data);
+            initialiseDownload(response.data.url);
             resetForm();
         }
     });
