@@ -1,4 +1,4 @@
-var apiEndpoint = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack';
+var apiEndpoint = 'http://localhost:3000/demo/shotstack'; //'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack';
 var progress = 0;
 var progressIncrement = 10;
 var pollIntervalSeconds = 10;
@@ -47,20 +47,16 @@ function initialiseVideo(src) {
  */
 function pollVideoStatus(id) {
     $.get(apiEndpoint + '/' + id, function(response) {
-        let res = response.data.response;
-        updateStatus(res.status);
-        if (!(res.status === 'done' || res.status === 'failed')) {
+        updateStatus(response.data.status);
+        if (!(response.data.status === 'done' || response.data.status === 'failed')) {
             setTimeout(function () {
                 pollVideoStatus(id);
-            }, pollIntervalSeconds * 500);
-        } else if (res.status === 'failed') {
-            updateStatus(res.status);
-            $('#status small').text(res.error);
-
+            }, pollIntervalSeconds * 1000);
+        } else if (response.data.status === 'failed') {
+            updateStatus(response.data.status);
         } else {
-            initialiseVideo(res.url);
-            initialiseJson(res.data);
-            initialiseDownload(res.url);
+            initialiseVideo(response.data.url);
+            initialiseJson(response.data.data);
             resetForm();
         }
     });

@@ -16,7 +16,7 @@ var submit = function(json) {
             data: json
         })
         .then((response) => {
-            return resolve(response)
+            return resolve(response.data)
         }, (error) => {
             return reject(error)
         });
