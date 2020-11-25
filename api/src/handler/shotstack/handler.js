@@ -24,7 +24,7 @@ module.exports.submit = async (event, context, callback) => {
     try {
         let render = await shotstack.submit(json);
         console.log('Render success');
-        callback(null, response.format(201, 'success', 'OK', render.data));
+        callback(null, response.format(201, 'success', 'OK', render));
     } catch(err) {
         console.error('Fail: ', err);
         callback(null, response.format(400, 'fail', 'Bad Request', err));

@@ -25,7 +25,7 @@ app.post('/demo/shotstack', async (req, res) => {
 
         res.header("Access-Control-Allow-Origin", "*");
         res.status(201);
-        res.send({ status: 'success', message: 'OK', data: render.data });
+        res.send({ status: 'success', message: 'OK', data: render });
     } catch (err) {
         console.log(err)
         res.header("Access-Control-Allow-Origin", "*");
