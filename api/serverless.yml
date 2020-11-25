@@ -5,11 +5,6 @@ provider:
   runtime: nodejs10.x
   stage: demo
   region: ap-southeast-2
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - s3:PutObject
-      Resource: arn:aws:s3:::shotstack-demo-storage/*
 
 package:
   exclude:
@@ -39,20 +34,6 @@ functions:
       - http:
           path: shotstack/{id}
           method: get
-          cors: true
-  getPresignedPostData:
-    handler: src/handler/shotstack/handler.getPresignedPostData
-    description: Demo - Get presigned url for asset upload
-    timeout: 15
-    memorySize: 128
-    events:
-      - s3:
-          bucket: shotstack-demo-storage
-          event: s3:ObjectCreated:*
-          existing: true
-      - http:
-          path: shotstack/url
-          method: post
           cors: true
 
 plugins:

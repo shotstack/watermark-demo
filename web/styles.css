@@ -85,12 +85,20 @@ a:hover {
     font-weight: 700;
 }
 
-#video-url, #watermark-url  {
+#video-url  {
     display: none;
 }
 
-.toggle-button-container {
+#watermark_url {
+    display: none;
+}
+
+#watermark-toggle, #video-toggle {
     height: 100px;
+}
+
+#watermark-toggle, #video-toggle {
+    cursor: pointer;
 }
 
 .info {
