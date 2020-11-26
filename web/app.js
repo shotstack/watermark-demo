@@ -1,5 +1,5 @@
 var apiUrl = 'http://localhost:3000/demo/'; // 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/';
-var apiEndpoint = apiUrl + 'shotstack'; // 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack';
+var apiEndpoint = apiUrl + 'shotstack';
 var urlEndpoint = apiUrl + 'upload/sign';
 var s3Bucket = 'https://shotstack-demo-storage.s3-ap-southeast-2.amazonaws.com/'
 var progress = 0;
