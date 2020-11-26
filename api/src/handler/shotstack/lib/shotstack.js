@@ -1,7 +1,6 @@
 const axios = require('axios').default;
 const shotstackUrl = process.env.SHOTSTACK_HOST;
 const shotstackApiKey = process.env.SHOTSTACK_API_KEY;
-const j = require('./watermark.json');
 
 var submit = function(json) {
 

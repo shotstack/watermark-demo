@@ -1,23 +1,21 @@
 'use strict';
 
 const response = require('../../shared/response');
-const shotstack = require('./lib/shotstackHandler');
-const jc = require('./lib/jsonCreationHandler');
-const s3 = require('./lib/s3Handler');
-const uniqid = require("uniqid");
+const shotstack = require('./lib/shotstack');
+const edit = require('./lib/edit');
 
 module.exports.submit = async (event) => {
     const data = JSON.parse(event.body);
     let json;
 
     try {
-        json = await jc.createJson(data);
+        json = await edit.createJson(data);
     } catch(err) {
         console.error(err);
     }
 
     try {
-        let render = await shotstack.submit(json);
+        const render = await shotstack.submit(json);
         console.log('Render success');
         return response.format(201, 'success', 'OK', render);
     } catch(err) {

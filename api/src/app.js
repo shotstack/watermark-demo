@@ -1,27 +1,27 @@
 require('dotenv').config();
 
-var express = require('express');
-var path = require('path');
-const shotstack = require('./handler/shotstack/lib/shotstackHandler');
-const jc = require('./handler/shotstack/lib/jsonCreationHandler');
+const express = require('express');
+const path = require('path');
+const shotstack = require('./handler/shotstack/lib/shotstack');
+const edit = require('./handler/shotstack/lib/edit');
 
-var app = express();
+const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname + '../../../web')));
 
 app.post('/demo/shotstack', async (req, res) => {
-    var json;
+    let json;
 
     try {
-        json = await jc.createJson(req.body);
+        json = await edit.createJson(req.body);
     } catch (err) {
         console.error(err);
     }
 
     try {
-        let render = await shotstack.submit(json);
+        const render = await shotstack.submit(json);
 
         res.header("Access-Control-Allow-Origin", "*");
         res.status(201);

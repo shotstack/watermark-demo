@@ -10,13 +10,13 @@ var createJson = function (body, duration) {
         let opacity;
 
         if (body.advanced == true) {
-            x = parseFloat(body.offsetX),
-                y = parseFloat(body.offsetY),
-                scale = parseFloat(body.scale),
-                opacity = parseFloat(body.opacity)
+            x = parseFloat(body.offsetX);
+            y = parseFloat(body.offsetY);
+            scale = parseFloat(body.scale);
+            opacity = parseFloat(body.opacity);
         } else {
-            scale = 1,
-                opacity = 0.5
+            scale = 1;
+            opacity = 0.5;
 
             if (body.position == 'topRight') {
 
@@ -42,13 +42,7 @@ var createJson = function (body, duration) {
 
         }
 
-        console.log('x: ' + x);
-        console.log('y: ' + y);
-        console.log('scale: ' + scale);
-        console.log('opacity: ' + opacity);
-        console.log('duration: ' + body.duration);
-
-        fs.readFile(__dirname + '/watermark.json', 'utf-8', function (err, data) {
+        fs.readFile(__dirname + '/template.json', 'utf-8', function (err, data) {
             if (err) console.error(err);
 
             let jsonParsed = JSON.parse(data);
@@ -64,8 +58,6 @@ var createJson = function (body, duration) {
             jsonParsed.timeline.tracks[1].clips[0].length = parseFloat(body.duration);
 
             let json = JSON.stringify(jsonParsed);
-
-            console.log(json);
 
             return resolve(json);
 
