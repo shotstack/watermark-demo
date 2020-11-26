@@ -2,6 +2,10 @@
   "name": "watermark-demo",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "deploy": "sls deploy",
+    "start": "node src/app.js"
+  },
   "dependencies": {
     "aws-sdk": "^2.793.0",
     "axios": "^0.21.0",
