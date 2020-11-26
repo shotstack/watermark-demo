@@ -1,5 +1,5 @@
-var apiEndpoint = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack';
-var urlEndpoint = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack/url';
+var apiEndpoint = 'http://localhost:3000/demo/shotstack'; // 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/shotstack';
+var urlEndpoint = apiEndpoint + '/url';
 var progress = 0;
 var progressIncrement = 10;
 var pollIntervalSeconds = 10;
