@@ -2,14 +2,14 @@ service: demo-watermark-shotstack
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: demo
   region: ap-southeast-2
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:PutObject
-      Resource: arn:aws:s3:::shotstack-demo-storage/*
+      Resource: arn:aws:s3:::${env:AWS_S3_UPLOADS_BUCKET}/*
 
 package:
   exclude:
@@ -42,18 +42,14 @@ functions:
           path: shotstack/{id}
           method: get
           cors: true
-  getPresignedPostData:
-    handler: src/handler/shotstack/handler.getPresignedPostData
+  upload:
+    handler: src/handler/upload/handler.getPresignedPostData
     description: Demo - Get presigned url for asset upload
     timeout: 15
     memorySize: 128
     events:
-      - s3:
-          bucket: shotstack-demo-storage
-          event: s3:ObjectCreated:*
-          existing: true
       - http:
-          path: shotstack/url
+          path: upload/sign
           method: post
           cors: true
 

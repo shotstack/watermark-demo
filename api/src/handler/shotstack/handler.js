@@ -34,15 +34,3 @@ module.exports.status = async (event) => {
         return response.format(400, 'fail', 'Bad Request', err);
     }
 };
-
-module.exports.getPresignedPostData = async (event, context, callback) => {
-    const data = JSON.parse(event.body);
-    try {
-        const presignedPostData = await s3.createPresignedPost(uniqid()+'-'+data.name, data.type);
-        console.log(presignedPostData);
-        callback(null, response.format(201, 'success', 'OK', presignedPostData));
-    } catch (err) {
-        console.error('Fail: ', err);
-        callback(null, response.format(500, 'fail', 'Bad Request', err));
-    }
-};
