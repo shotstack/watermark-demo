@@ -1,18 +1,13 @@
 'use strict';
 
-const response = require('../shared/response');
+const response = require('../../shared/response');
 const shotstack = require('./lib/shotstackHandler');
 const jc = require('./lib/jsonCreationHandler');
 const s3 = require('./lib/s3Handler');
 const uniqid = require("uniqid");
 
-module.exports.submit = async (event, context, callback) => {
-
-    console.log('event: ' + JSON.stringify(event));
-    console.log('context: ' + JSON.stringify(context));
-
+module.exports.submit = async (event) => {
     const data = JSON.parse(event.body);
-
     let json;
 
     try {
@@ -24,22 +19,21 @@ module.exports.submit = async (event, context, callback) => {
     try {
         let render = await shotstack.submit(json);
         console.log('Render success');
-        callback(null, response.format(201, 'success', 'OK', render));
+        return response.format(201, 'success', 'OK', render);
     } catch(err) {
         console.error('Fail: ', err);
-        callback(null, response.format(400, 'fail', 'Bad Request', err));
+        return response.format(400, 'fail', 'Bad Request', err);
     }
-
 };
 
-module.exports.status = async (event, context, callback) => {
+module.exports.status = async (event) => {
     try {
         let status = await shotstack.status(event.pathParameters.id);
         console.log('Poll success');
-        callback(null, response.format(201, 'success', 'OK', status));
+        return response.format(201, 'success', 'OK', status);
     } catch (err) {
         console.error('Fail: ', err);
-        callback(null, response.format(400, 'fail', 'Bad Request', err));
+        return response.format(400, 'fail', 'Bad Request', err);
     }
 };
 
