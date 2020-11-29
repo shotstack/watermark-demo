@@ -10,10 +10,11 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css" integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css" integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.3.21/plyr.css">
+    <link rel="stylesheet" href="https://shotstack.io/assets/css/main.css">
     <link rel="stylesheet" href="styles.css">
     <!-- GA -->
 
-    <title>Shotstack Watermarker</title>
+    <title>Watermark Video Shotstack Demo</title>
 </head>
 <body>
     <div class="container content mt-4 mb-4">
@@ -26,106 +27,85 @@
                 </header>
             </div>
         </div>
+        <div class="row mt-4 mb-5 row-header">
+            <div class="col-sm">
+                <h1>Watermark Video</h1>
+                <h2 class="font-weight-light font-italic text-center">
+                    Add a watermark to your video using the Shotstack API
+                </h2>
+            </div>
+        </div>
         <div class="row">
             <div class="col-5">
                 <form class="jumbotron" method="post">
-                    <div class="row">
-                        <div class="col-12">
-                            <h2>Video Watermarker</h2>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group" id="video-group">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <h5>Video</h5>
-                                    </div>
-                                    <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Maximum upload size of 250MB"></i>
-                                    </div>
-                                </div>
-                                <div class="row mb-3 mx-1 toggle" id="video-toggle">
-                                    <div id="video-toggle-upload" class="col-6 border p-0 upload-toggle toggle-button-container">
-                                        <button type="button" class="btn btn-secondary w-100 h-100 p-0 upload-button toggle-button">
-                                            <span id="video-loading-image" class="spinner-border d-none loading-image" role="status" aria-hidden="true"></span>
-                                            <i id="video-upload-icon" class="fas fa-upload fa-2x w-100 upload-icon"></i>
-                                        </button>
-                                    </div>
-                                    <div id="video-toggle-url" class="col-6 text-center border p-0 url-toggle toggle-button-container">
-                                        <button type="button" class="btn btn-secondary w-100 h-100 p-0 url-button toggle-button">
-                                            <i class="fas fa-link fa-2x w-100"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <input name="video-upload" class="d-none upload" type="file" id="video-upload"/>
-                                <input name="video-url"
-                                       type="url"
-                                       pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
-                                       oninvalid="setCustomValidity('Only valid URLs are allowed')"
-                                       oninput="setCustomValidity('')"
-                                       class="form-control input-url"
-                                       id="video-url"
-                                       placeholder="Link to the video you want watermarked"
-                                       maxlength="300"
-                                >
-                                <div class="row my-2 d-none file-placeholder"  id="video-file">
-                                    <div class="col-10 name"></div>
-                                    <div class="col-2 icon">
-                                        <button id="video-trash" type="button" class="btn btn-danger float-right remove-file">
-                                            <i class="fas fa-trash float-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                    <div class="form-group video-group">
+                        <label for="search">Video File</label>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <button type="button" class="btn btn-secondary w-100 upload-button toggle-button">
+                                    <span class="spinner-border spinner-border-sm d-none loading-image" role="status" aria-hidden="true"></span>
+                                    <i class="fas fa-upload upload-icon"></i> Upload
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-secondary w-100 url-button toggle-button"  data-toggle="collapse" href="#urlExpand" role="button" aria-expanded="false" aria-controls="urlExpand">
+                                    <i class="fas fa-link "></i> URL
+                                </button>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group" id="watermark-group">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <h5>Watermark</h5>
-                                    </div>
-                                    <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can use either a video or an image as your watermark. Maximum upload size of 250MB"></i>
-                                    </div>
-                                </div>                                
-                                <div class="row mb-3 mx-1 toggle" id="watermark-toggle">
-                                    <div id="watermark-toggle-upload" class="col-6 border p-0 upload-toggle toggle-button-container">
-                                        <button type="button" class="btn btn-secondary w-100 h-100 p-0 upload-button toggle-button">
-                                            <span id="watermark-loading-image" class="spinner-border d-none loading-image" role="status" aria-hidden="true"></span>
-                                            <i id="watermark-upload-icon" class="fas fa-upload fa-2x w-100 upload-icon"></i>
-                                        </button>
-                                    </div>
-                                    <div id="watermark-toggle-url" class="col-6 text-center border p-0 url-toggle toggle-button-container">
-                                        <button type="button" class="btn btn-secondary w-100 h-100 url-button toggle-button">
-                                            <i class="fas fa-link fa-2x w-100"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <input name="watermark-upload" class="d-none upload" type="file" id="watermark-upload"/>
-                                <input name="watermark-url"
-                                       type="url"
-                                       pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
-                                       oninvalid="setCustomValidity('Only valid URLs are allowed')"
-                                       oninput="setCustomValidity('')"
-                                       class="form-control input-url"
-                                       id="watermark-url"
-                                       placeholder="Link to your video or image watermark"
-                                       maxlength="300"
-                                >
-                                <div class="row my-2 d-none file-placeholder"  id="watermark-file">
-                                    <div class="col-10 name"></div>
-                                    <div class="col-2 icon">
-                                        <button type="button" class="btn btn-danger float-right remove-file">
-                                            <i class="fas fa-trash float-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                        <input name="video-url"
+                            type="url"
+                            pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+                            oninvalid="setCustomValidity('Only valid URLs are allowed')"
+                            oninput="setCustomValidity('')"
+                            class="form-control input-url"
+                            id="video-url"
+                            placeholder="Link to the video you want watermarked"
+                            maxlength="300"
+                        >
+                        <input name="video-upload" class="d-none upload" type="file" id="video-upload"/>
+                        <div class="my-1 file-placeholder" id="video-file">
+                            <span class="name"></span>
+                            <a type="button" class="btn remove-file">
+                                <i class="fas fa-trash"></i>
+                            </a>
                         </div>
                     </div>
+                    <div class="form-group video-group">
+                        <label for="search">Watermark File</label>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <button type="button" class="btn btn-secondary w-100 upload-button toggle-button">
+                                    <span class="spinner-border spinner-border-sm d-none loading-image" role="status" aria-hidden="true"></span>
+                                    <i class="fas fa-upload upload-icon"></i> Upload
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-secondary w-100 url-button toggle-button"  data-toggle="collapse" href="#urlExpand" role="button" aria-expanded="false" aria-controls="urlExpand">
+                                    <i class="fas fa-link "></i> URL
+                                </button>
+                            </div>
+                        </div>
+                        <input name="watermark-url"
+                            type="url"
+                            pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+                            oninvalid="setCustomValidity('Only valid URLs are allowed')"
+                            oninput="setCustomValidity('')"
+                            class="form-control input-url"
+                            id="watermark-url"
+                            placeholder="Link to your video or image watermark"
+                            maxlength="300"
+                        >
+                        <input name="watermark-upload" class="d-none upload" type="file" id="watermark-upload"/>
+                        <div class="my-1 file-placeholder" id="watermark-file">
+                            <span class="name"></span>
+                            <a type="button" class="btn remove-file">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group" id="position-group">

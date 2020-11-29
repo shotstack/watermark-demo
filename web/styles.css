@@ -46,15 +46,9 @@ header {
     margin-bottom: 2rem;
 }
 
-.btn-primary {
-    font-weight: bold;
-    background-color: #25d3d0;
-    border-color: #25d3d0;
-}
-
-.btn-primary:hover, .btn-primary:active {
-    background-color: #25d3d0;
-    border-color: #25d3d0;
+.video-btn-group .btn.active {
+	background-color: #25d3d0 !important;
+	border-color: #25d3d0 !important;
 }
 
 a {
@@ -85,7 +79,7 @@ a:hover {
     font-weight: 700;
 }
 
-#video-url, #watermark-url  {
+input[name="video-url"], #video-url, #watermark-url, .file-placeholder  {
     display: none;
 }
 

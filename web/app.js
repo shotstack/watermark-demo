@@ -1,4 +1,4 @@
-var apiUrl = 'http://localhost:3000/demo/'; // 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/';
+var apiUrl = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/'; // 'http://localhost:3000/demo/'; 
 var apiEndpoint = apiUrl + 'shotstack';
 var urlEndpoint = apiUrl + 'upload/sign';
 var s3Bucket = 'https://shotstack-demo-storage.s3-ap-southeast-2.amazonaws.com/'
@@ -72,7 +72,6 @@ function pollVideoStatus(id) {
  * @param {String} status  the status text
  */
 function updateStatus(status) {
-
     $('#status').removeClass('d-none');
     $('#instructions').addClass('d-none');
 
@@ -115,6 +114,11 @@ function updateStatus(status) {
  * @param error
  */
 function displayError(error) {
+    if (typeof error === 'string') {
+        $('#errors').text(error).removeClass('d-hide').addClass('d-block');
+        return;
+    }
+
     updateStatus(null);
 
     if (error.status === 400) {
@@ -186,8 +190,6 @@ function resetVideo() {
 function submitVideoEdit() {
     updateStatus('submitted');
 
-    var val = validateToggleButtons();
-
     var formData = {
         'position': $('#position option:selected').val(),
         'advanced': $('#advanced-checkbox').is(':checked'),
@@ -195,20 +197,10 @@ function submitVideoEdit() {
         'offsetX': $('#watermark-x-offset').val(),
         'offsetY': $('#watermark-y-offset').val(),
         'opacity': $('#watermark-opacity option:selected').val(),
-        'duration': $('#clip-length').val()
+        'duration': $('#clip-length').val(),
+        'video': getSelectedVideoFile(),
+        'watermark': getSelectedWatermarkFile()
     };
-
-    if (val.video == 'url') {
-        formData['video'] = $('#video-url').val();
-    } else {
-        formData['video'] = s3Bucket + $('#video-file .name').attr("data-file");
-    }
-
-    if (val.watermark == 'url') {
-        formData['watermark'] = $('#watermark-url').val();
-    } else {
-        formData['watermark'] = s3Bucket + $('#watermark-file .name').attr("data-file");
-    }
 
     $.ajax({
         type: 'POST',
@@ -276,88 +268,144 @@ function initialiseJson(json) {
     $('.json-container').html(prettyPrintJson(json));
 }
 
+/**
+ * Open video in new window
+ *
+ * @param {String} url 
+ */
 function initialiseDownload(url) {
     $('#download').attr("href", url);
 }
 
-$(document).on('click', '#advanced-checkbox', function (e) {
+/**
+ * Set URL to active
+ * @param {Object} $urlButton 
+ */
+function setUrlActive($urlButton) {
+    var $parent = $urlButton.closest('.video-group');
+    var $videoUrlField = $parent.children('.input-url');
+    var $uploadField = $parent.children('.upload');
 
-    if ($('#advanced-checkbox').is(':checked')) {
-        $('#advanced').slideDown('fast');
-        $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-up float-right');
-        $(('input.advanced') && ('select.advanced')).prop('required', true);
-    } else {
-        $('#advanced').slideUp('fast');
-        $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-down float-right');
-        $(('input.advanced') && ('select.advanced')).removeAttr('required');
-    }
-
-});
-
-$(document).on('click', '.url-button', function (e) {
-
-    var videoUrl = $(this).closest('.toggle').siblings('.input-url');
-    var button = $(this);
-    var downloadButton = $(this).closest('.toggle').find('.upload-button');
-
-    videoUrl.slideToggle('fast', function () {
-        if (videoUrl.is(':hidden')) {
-            button.removeClass('btn-primary').addClass('btn-secondary');
-            videoUrl.removeAttr('required');
-            videoUrl.siblings('.upload').prop('required', true);
-            downloadButton.prop('disabled', false);
-        } else {
-            button.addClass('btn-primary').removeClass('btn-secondary');
-            videoUrl.prop('required', true);
-            videoUrl.siblings('.upload').removeAttr('required');
-            downloadButton.prop('disabled', true);
-        }
-    });
-
-
-})
-
-$(document).on('click', '.upload-button', function (e) {
-    e.preventDefault();
-    $(this).closest('.toggle').siblings('.upload').prop('required', true);
-    $(this).closest('.toggle').siblings('.upload').click();
-});
-
-$(document).on('click', '.remove-file', function (e) {
-    removeFile($(this));
-});
-
-function removeFile(thisObj) {
-    thisObj.closest('div').siblings('.name').empty();
-    thisObj.closest('div').siblings('.name').removeAttr('data-file');
-    thisObj.closest('.file-placeholder').addClass('d-none');
-    thisObj.closest('.file-placeholder').siblings('.toggle').find('.upload-button').removeClass('btn-primary').addClass('btn-secondary');
-    thisObj.closest('.file-placeholder').siblings('.toggle').find('.url-button').prop('disabled', false);
+    $urlButton.addClass('btn-primary').removeClass('btn-secondary');
+    $videoUrlField.prop('required', true);
+    $uploadField.removeAttr('required');
+    $videoUrlField.slideDown('fast');
 }
 
-$(document).on('change', '.upload', function (e) {
+/**
+ * Set URL to inactive
+ * @param {Object} $urlButton 
+ */
+function setUrlInactive($urlButton) {
+    var $parent = $urlButton.closest('.video-group');
+    var $videoUrlField = $parent.children('.input-url');
 
-    var name = e.target.files[0].name;
-    var type = e.target.files[0].type;
+    $urlButton.removeClass('btn-primary').addClass('btn-secondary');
+    $videoUrlField.removeAttr('required');
+    $videoUrlField.slideUp('fast');
+}
 
-    getPresignedPostData(name, type, function (data) {
-        uploadFile(e.target.files[0], data, e.target);
-    });
+/**
+ * Set upload to active
+ * @param {Object} $uploadButton 
+ */
+function setUploadActive($uploadButton) {
+    var $parent = $uploadButton.closest('.video-group');
+    var $videoUrlField = $parent.children('.input-url');
+    var $uploadField = $parent.find('.upload');
+    var $filePlaceholder = $parent.children('.file-placeholder');
 
-});
+    $uploadButton.addClass('btn-primary').removeClass('btn-secondary');
+    $videoUrlField.removeAttr('required');
+    $uploadField.prop('required', true);
+    $filePlaceholder.slideDown('fast');
+}
 
-function uploadFile(file, presignedPostData, thisObj) {
+/**
+ * Set Upload to inactive
+ * @param {Object} $uploadButton 
+ */
+function setUploadInactive($uploadButton) {
+    var $parent = $uploadButton.closest('.video-group');
+    var $uploadField = $parent.find('.upload');
+    var $filePlaceholder = $parent.children('.file-placeholder');
+
+    $uploadButton.removeClass('btn-primary').addClass('btn-secondary');
+    $uploadField.removeAttr('required');
+    $filePlaceholder.slideUp('fast');
+}
+
+/**
+ * Remove a file from upload
+ *
+ * @param {*} $removeButton 
+ */
+function removeFile($removeButton) {
+    var $uploadButton = $removeButton.closest('.video-group').find('.upload-button');
+    var $filename = $removeButton.siblings('.name');
+
+    setUploadInactive($uploadButton);
+    $filename.empty().removeAttr('data-file');
+}
+
+/**
+ * Get the URL of the selected video file
+ */
+function getSelectedVideoFile() {
+    var $videoUrl = $('#video-url');
+    var $videoFile = $('#video-upload');
+
+    if ($videoUrl.prop('required')) {
+        return $videoUrl.val();
+    }
+
+    if ($videoFile.prop('required')) {
+        var $videoFileName = $('#video-file .name')
+        return s3Bucket + $videoFileName.attr("data-file")
+    }
+}
+
+/**
+ * Get the URL of the selected watermark file
+ */
+function getSelectedWatermarkFile() {
+    var $watermarkUrl = $('#watermark-url');
+    var $watermarkFile = $('#watermark-upload');
+
+    if ($watermarkUrl.prop('required')) {
+        return $watermarkUrl.val();
+    }
+
+    if ($watermarkFile.prop('required')) {
+        var $watermarkFileName = $('#watermark-file .name')
+        return s3Bucket + $watermarkFileName.attr("data-file")
+    }
+}
+
+/**
+ * Upload a file to AWS S3
+ * 
+ * @param {String} file 
+ * @param {Object} presignedPostData 
+ * @param {Object} element 
+ */
+function uploadFileToS3(file, presignedPostData, element) {
+    var $uploadField = $(element);
+    var $parent = $uploadField.closest('.video-group');
+    var $uploadButton = $parent.find('.upload-button');
+    var $loadingSpinner = $uploadButton.find('.loading-image');
+    var $uploadIcon = $uploadButton.find('.upload-icon');
+    var $filePlaceholder = $parent.children('.file-placeholder');
+    var $filePlaceholderName = $filePlaceholder.children('.name');
 
     var formData = new FormData();
-
     Object.keys(presignedPostData.fields).forEach(key => {
         formData.append(key, presignedPostData.fields[key]);
     });
-
     formData.append('file', file);
 
-    $(thisObj).siblings('.toggle').find('.loading-image').removeClass('d-none');
-    $(thisObj).siblings('.toggle').find('.upload-icon').addClass('d-none');
+    $loadingSpinner.removeClass('d-none');
+    $uploadIcon.addClass('d-none');
 
     $.ajax({
         url: presignedPostData.url,
@@ -366,27 +414,29 @@ function uploadFile(file, presignedPostData, thisObj) {
         contentType: false,
         processData: false
     }).done(function (response, statusText, xhr) {
-        $(thisObj).siblings('.toggle').find('.loading-image').addClass('d-none');
-        $(thisObj).siblings('.toggle').find('.upload-icon').removeClass('d-none');
-        if (xhr.status == 204) {
-            $(thisObj).siblings('.file-placeholder').removeClass('d-none');
-            $(thisObj).siblings('.file-placeholder').children('.name').text(file.name);
-            $(thisObj).siblings('.file-placeholder').children('.name').attr('data-file', presignedPostData.fields['key']);
-            $(thisObj).siblings('.toggle').find('.upload-button').addClass('btn-primary').removeClass('btn-secondary');
-            $(thisObj).siblings('.toggle').find('.url-button').prop('disabled', true);
+        $loadingSpinner.addClass('d-none');
+        $uploadIcon.removeClass('d-none');
+        if (xhr.status === 204) {
+            setUploadActive($uploadButton);
+            $filePlaceholderName.text(file.name).attr('data-file', presignedPostData.fields['key']);
         } else {
             console.log(xhr.status);
         }
     }).fail(function (error) {
-        console.log(error);
+        console.error(error)
+        displayError('Failed to upload file to S3');
     });
-
 }
 
-function getPresignedPostData(name, type, callback) {
-
+/**
+ * Get an AWS signed URL for S3 uploading
+ *
+ * @param {*} name 
+ * @param {*} type 
+ * @param {*} callback 
+ */
+function getS3PresignedPostData(name, type, callback) {
     var formData = new FormData();
-
     var formData = {
         'name': name,
         'type': type
@@ -405,41 +455,91 @@ function getPresignedPostData(name, type, callback) {
         } else {
             callback(response.data);
         }
-
     }).fail(function (error) {
-        displayError({ status: 400, });
+        console.error(error)
+        displayError('Failed to generate S3 signed URL');
     });
-
 }
 
-function validateToggleButtons() {
-    var buttonActivation = { number: 0, video: null, watermark: null };
-    $('.toggle-button').each(function (index) {
-        var sub = $(this)[0].parentElement.id.split('-')[0];
-        var type = $(this)[0].parentElement.id.split('-')[2];
-        $.map($(this)[0].classList, function (value, index) {
-            if (value == 'btn-primary' && sub == 'video') {
-                buttonActivation.number++;
-                buttonActivation.video = type;
-            } else if (value == 'btn-primary' && sub == 'watermark') {
-                buttonActivation.number++;
-                buttonActivation.watermark = type;
-            }
-        })
-    });
-    return buttonActivation;
+function isFormValid() {
+    $requiredFields = $('.video-group').find('input[required]');
+
+    if ($requiredFields.length !== 2) {
+        return false;
+    }
+
+    return true;
 }
 
-$('[data-toggle="tooltip"]').tooltip({ trigger: 'click' });
-
+/**
+ * Event Handlers
+ */
 $(document).ready(function () {
+    /** URL button click event */
+    $('.url-button').click(function () {
+        var $urlButton = $(this);
+        var $parent = $urlButton.closest('.video-group');
+        var $videoUrlField = $parent.children('.input-url');
+        var $uploadButton = $parent.find('.upload-button');
+
+        setUploadInactive($uploadButton);
+
+        if ($videoUrlField.is(':hidden')) {
+            setUrlActive($urlButton);
+        } else {
+            setUrlInactive($urlButton);
+        }
+    })
+
+    /** Upload button click event */
+    $('.upload-button').click(function (event) {
+        var $uploadButton = $(this);
+        var $parent = $uploadButton.closest('.video-group');
+        var $uploadField = $parent.find('.upload');
+        var $urlButton = $parent.find('.url-button');
+
+        setUrlInactive($urlButton);
+        $uploadField.prop('required', true).click();
+
+        event.preventDefault();
+    });
+
+    /** Remove file button click event */
+    $('.remove-file').click(function () {
+        removeFile($(this));
+    });
+
+    /** File upload change event */
+    $('.upload').change(function (event) {
+        var name = event.target.files[0].name;
+        var type = event.target.files[0].type;
+
+        getS3PresignedPostData(name, type, function (data) {
+            uploadFileToS3(event.target.files[0], data, event.target);
+        });
+    });
+
+    $('#advanced-checkbox').on('click', function (e) {
+        if ($('#advanced-checkbox').is(':checked')) {
+            $('#advanced').slideDown('fast');
+            $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-up float-right');
+            $(('input.advanced') && ('select.advanced')).prop('required', true);
+        } else {
+            $('#advanced').slideUp('fast');
+            $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-down float-right');
+            $(('input.advanced') && ('select.advanced')).removeAttr('required');
+        }
+    });
+
+    /** Form submit event */
     $('form').submit(function (event) {
-        if (validateToggleButtons().number == 2) {
+        if (isFormValid()) {
             resetErrors();
             resetVideo();
             submitVideoEdit();
         } else {
-            $('#errors').removeClass('d-none').text('Please select both a video and a watermark.')
+            console.log('here')
+            displayError('Please select both a video and a watermark.')
         }
 
         event.preventDefault();
