@@ -70,14 +70,6 @@ a:hover {
     margin: 0;
 }
 
-#advanced {
-    display: none;
-}
-
-#advanced-checkbox-group label{
-    cursor: pointer;
-    font-weight: 700;
-}
 
 input[name="video-url"], #video-url, #watermark-url, .file-placeholder  {
     display: none;

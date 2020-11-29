@@ -1,4 +1,4 @@
-var apiUrl = 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/'; // 'http://localhost:3000/demo/'; 
+var apiUrl = 'http://localhost:3000/demo/'; // 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/';
 var apiEndpoint = apiUrl + 'shotstack';
 var urlEndpoint = apiUrl + 'upload/sign';
 var s3Bucket = 'https://shotstack-demo-storage.s3-ap-southeast-2.amazonaws.com/'
@@ -164,9 +164,9 @@ function resetErrors() {
  * Reset form
  */
 function resetForm() {
-    $('form').trigger("reset");
+    //$('form').trigger("reset");
     $('#submit-video').prop('disabled', false);
-    removeFile($('.remove-file'));
+    //removeFile($('.remove-file'));
 }
 
 /**
@@ -192,11 +192,9 @@ function submitVideoEdit() {
 
     var formData = {
         'position': $('#position option:selected').val(),
-        'advanced': $('#advanced-checkbox').is(':checked'),
-        'scale': $('#watermark-scale option:selected').val(),
-        'offsetX': $('#watermark-x-offset').val(),
-        'offsetY': $('#watermark-y-offset').val(),
-        'opacity': $('#watermark-opacity option:selected').val(),
+        'scale': $('#scale option:selected').val(),
+        'padding': $('#padding').val(),
+        'opacity': $('#opacity option:selected').val(),
         'duration': $('#clip-length').val(),
         'video': getSelectedVideoFile(),
         'watermark': getSelectedWatermarkFile()
@@ -461,6 +459,9 @@ function getS3PresignedPostData(name, type, callback) {
     });
 }
 
+/**
+ * Check video and watermark are selected
+ */
 function isFormValid() {
     $requiredFields = $('.video-group').find('input[required]');
 
@@ -517,18 +518,6 @@ $(document).ready(function () {
         getS3PresignedPostData(name, type, function (data) {
             uploadFileToS3(event.target.files[0], data, event.target);
         });
-    });
-
-    $('#advanced-checkbox').on('click', function (e) {
-        if ($('#advanced-checkbox').is(':checked')) {
-            $('#advanced').slideDown('fast');
-            $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-up float-right');
-            $(('input.advanced') && ('select.advanced')).prop('required', true);
-        } else {
-            $('#advanced').slideUp('fast');
-            $('#advanced-checkbox-group .fas').attr('class', 'fas fa-caret-down float-right');
-            $(('input.advanced') && ('select.advanced')).removeAttr('required');
-        }
     });
 
     /** Form submit event */

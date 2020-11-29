@@ -6,15 +6,9 @@ const edit = require('./lib/edit');
 
 module.exports.submit = async (event) => {
     const data = JSON.parse(event.body);
-    let json;
 
     try {
-        json = await edit.createJson(data);
-    } catch(err) {
-        console.error(err);
-    }
-
-    try {
+        const json = await edit.createJson(data);
         const render = await shotstack.submit(json);
         console.log('Render success');
         return response.format(201, 'success', 'OK', render);
@@ -26,7 +20,7 @@ module.exports.submit = async (event) => {
 
 module.exports.status = async (event) => {
     try {
-        let status = await shotstack.status(event.pathParameters.id);
+        const status = await shotstack.status(event.pathParameters.id);
         console.log('Poll success');
         return response.format(201, 'success', 'OK', status);
     } catch (err) {

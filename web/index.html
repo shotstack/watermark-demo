@@ -15,6 +15,7 @@
     <!-- GA -->
 
     <title>Watermark Video Shotstack Demo</title>
+    <meta name="description" content="Add a watermark to a video using the Shotstack API. This free demo lets you upload a video and add a watermark."/>
 </head>
 <body>
     <div class="container content mt-4 mb-4">
@@ -39,7 +40,8 @@
             <div class="col-5">
                 <form class="jumbotron" method="post">
                     <div class="form-group video-group">
-                        <label for="search">Video File</label>
+                        <label><b>Video</b></label>
+                        <small class="form-text text-muted float-right">Max file size: 250Mb</small>
                         <div class="row mb-3">
                             <div class="col-6">
                                 <button type="button" class="btn btn-secondary w-100 upload-button toggle-button">
@@ -60,7 +62,7 @@
                             oninput="setCustomValidity('')"
                             class="form-control input-url"
                             id="video-url"
-                            placeholder="Link to the video you want watermarked"
+                            placeholder="https://mydomain.com/storage/video.mp4"
                             maxlength="300"
                         >
                         <input name="video-upload" class="d-none upload" type="file" id="video-upload"/>
@@ -71,8 +73,27 @@
                             </a>
                         </div>
                     </div>
+                    <div class="form-group" id="title-group">
+                        <label for="clip-length">Duration <small class="form-text text-muted float-right">&nbsp (seconds)</small></label>
+                        <small class="form-text text-muted float-right">Max length: 2 minutes</small>
+                        <input name="clip-length"
+                            type="number"
+                            min=1
+                            max=120
+                            step=1
+                            pattern="[0-1]"
+                            oninvalid="setCustomValidity('Only values between 1 and 120 are allowed')"
+                            oninput="setCustomValidity('')"
+                            class="form-control advanced"
+                            id="clip-length"
+                            value="15"
+                            maxlength="3"
+                        />
+                    </div>
+
                     <div class="form-group video-group">
-                        <label for="search">Watermark File</label>
+                        <label><b>Watermark</b></label>
+                        <small class="form-text text-muted float-right">Max file size: 250Mb</small>
                         <div class="row mb-3">
                             <div class="col-6">
                                 <button type="button" class="btn btn-secondary w-100 upload-button toggle-button">
@@ -105,190 +126,77 @@
                         </div>
                     </div>
 
-                    
                     <div class="row">
-                        <div class="col-12">
-                            <div class="form-group" id="position-group">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <label for="position">Watermark Position</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Please select where in the video you would like to place your watermark."></i>
-                                    </div>
-                                </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="position">Position</label>
                                 <select name="position" id="position" class="custom-select" required>
-                                    <option value="">Choose...</option>
                                     <option value="topLeft">Top Left</option>
-                                    <option value="topRight">Top Right</option>
+                                    <option value="topRight" selected>Top Right</option>
                                     <option value="bottomLeft">Bottom Left</option>
                                     <option value="bottomRight">Bottom Right</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group" id="clip-length-group">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <label for="clip-length">Clip length</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="Enter the total duration of your video clip here in seconds."></i>
-                                    </div>
-                                </div>
-                                <input name="clip-length"
-                                       type="number"
-                                       min=1
-                                       max=600
-                                       step=1
-                                       pattern="[0-1]"
-                                       oninvalid="setCustomValidity('Only values between 1 and 600 are allowed')"
-                                       oninput="setCustomValidity('')"
-                                       class="form-control advanced"
-                                       id="clip-length"
-                                       placeholder="Clip length in seconds"
-                                       maxlength="3"
-                                >
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="padding">Padding <small class="form-text text-muted float-right">&nbsp (pixels)</small></label>
+                                <input name="padding"
+                                    type="number"
+                                    min=0
+                                    max=100
+                                    step=1
+                                    pattern="[0-1]"
+                                    oninvalid="setCustomValidity('Only values between 0 and 100 are allowed')"
+                                    oninput="setCustomValidity('')"
+                                    class="form-control"
+                                    id="padding"
+                                    value="20"
+                                    maxlength="3"
+                                />
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <div class="form-group" id="advanced-checkbox-group">
-                                <label for="advanced-checkbox" class="w-100">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            Advanced settings
-                                        </div>
-                                        <div class="col-4">
-                                            <i class="fas fa-caret-down float-right"></i>
-                                        </div>
-                                    </div>
-                                </label>
-                                <input name="advanced-checkbox"
-                                    type="checkbox"
-                                    class="form-control w-auto d-none"
-                                    id="advanced-checkbox"
-                                >
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="scale">Scale</label>
+                                <select name="scale" id="scale" class="custom-select">
+                                    <option value="0.25">0.25x</option>
+                                    <option value="0.5">0.5x</option>
+                                    <option value="0.75">0.75x</option>
+                                    <option value="1" selected>1x</option>
+                                    <option value="1.25">1.25x</option>
+                                    <option value="1.5">1.5x</option>
+                                    <option value="1.75">1.75x</option>
+                                    <option value="2">2x</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row" id="advanced">
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group" id="watermark-scale-group">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <label for="watermark-scale">Watermark scale</label>
-                                            </div>
-                                            <div class="col-4">
-                                                <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="You can resize your watermark to fit your video."></i>
-                                            </div>
-                                        </div>
-                                        <select name="watermark-scale" id="watermark-scale" class="custom-select advanced">
-                                            <option value="">Choose...</option>
-                                            <option value="0.25">0.25x</option>
-                                            <option value="0.5">0.50x</option>
-                                            <option value="0.75">0.75x</option>
-                                            <option value="1">1.00x</option>
-                                            <option value="1.25">1.25x</option>
-                                            <option value="1.5">1.50x</option>
-                                            <option value="1.75">1.75x</option>
-                                            <option value="2">2.00x</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group" id="watermark-x-offset-group">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <label for="watermark-x-offset">Watermark x offset</label>
-                                            </div>
-                                            <div class="col-2">
-                                                <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="The x-offset is the location of your watermark on the x-axis relative to it's position on your video."></i>
-                                            </div>
-                                        </div>
-                                        <input name="watermark-x-offset"
-                                               type="number"
-                                               min=-1
-                                               max=1
-                                               step=0.01
-                                               pattern="[0-1]"
-                                               oninvalid="setCustomValidity('Only values between -1 and 1 are allowed')"
-                                               oninput="setCustomValidity('')"
-                                               class="form-control advanced"
-                                               id="watermark-x-offset"
-                                               placeholder="Offset your watermark on the x axis"
-                                               maxlength="4"
-                                        >
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group" id="watermark-y-offset-group">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <label for="watermark-y-offset">Watermark y offset</label>
-                                            </div>
-                                            <div class="col-2">
-                                                <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="The y-offset is the location of your watermark on the y-axis relative to it's position on your video."></i>
-                                            </div>
-                                        </div>
-                                        <input name="watermark-y-offset"
-                                               type="number"
-                                               min=-1
-                                               max=1
-                                               step=0.01
-                                               pattern="[0-1]"
-                                               oninvalid="setCustomValidity('Only values between -1 and 1 are allowed')"
-                                               oninput="setCustomValidity('')"
-                                               class="form-control advanced"
-                                               id="watermark-y-offset"
-                                               placeholder="Offset your watermark on the y axis"
-                                               maxlength="4"
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group" id="watermark-opacity-group">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <label for="watermark-opacity">Watermark opacity</label>
-                                            </div>
-                                            <div class="col-4">
-                                                <i class="fas fa-info-circle float-right info" id="info-video" data-toggle="tooltip" data-placement="right" title="The transparency of your watermark."></i>
-                                            </div>
-                                        </div>
-                                        <select name="watermark-opacity" id="watermark-opacity" class="custom-select advanced">
-                                            <option value="">Choose...</option>
-                                            <option value="0.1">10%</option>
-                                            <option value="0.2">20%</option>
-                                            <option value="0.3">30%</option>
-                                            <option value="0.4">40%</option>
-                                            <option value="0.5">50%</option>
-                                            <option value="0.6">60%</option>
-                                            <option value="0.7">70%</option>
-                                            <option value="0.8">80%</option>
-                                            <option value="0.9">90%</option>
-                                            <option value="1.0">100%</option>
-                                        </select>
-                                    </div>
-                                </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="opacity">Opacity</label>
+                                <select name="opacity" id="opacity" class="custom-select">
+                                    <option value="0.1">10%</option>
+                                    <option value="0.2">20%</option>
+                                    <option value="0.3">30%</option>
+                                    <option value="0.4">40%</option>
+                                    <option value="0.5">50%</option>
+                                    <option value="0.6">60%</option>
+                                    <option value="0.7" selected>70%</option>
+                                    <option value="0.8">80%</option>
+                                    <option value="0.9">90%</option>
+                                    <option value="1">100%</option>
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="alert alert-danger d-none" role="alert" id="errors"></div>
-                    <button type="submit" class="btn btn-primary" id="submit-video">Add Watermark</button>
+                    <button type="submit" class="btn btn-primary" id="submit-video">Create Video</button>
                 </form>
                 <div class="mt-3">
                     <img class="mr-1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAABLFBMVEUAAAD///8XFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRYXFRZ95wE6AAAAY3RSTlMAAAECAwQHCAwNDxAREhQVFhgZHh8hKDEyMzQ1ODk8Pj9CRllcXl9gYmNkZWdob3N0dXh6foqPl5udnqSpqqutrrC3ucHCw8TJ0NHS1trb3N7f4eLj6Orr7PHy8/X29/r7/P5vXnskAAABfUlEQVR4AYXReVfTQBQF8GsgEVKCRJCluIgsEkFxQRaIEBFFILSAoqR7e7//d3DenLTNknP8/TN/zHt3zj2DoUnv8LJO1i8PvUnkzfkdDnT8OaTZez2m9Pbs1Po1c64TIUsRC0RLiC1ELBQtQJu4IRkeR6m745DkzQTEAZUVWN6dqnh6qqreeRZWqBxAKVPMS5XZESgjs1JgnqIMIKBYRMYiRQC4XYo1ZKxRdF1sUvx2kOH8otiET7GOnHUKH6FOspFj67dDNKncosAtlSYoKihQpQBFDQVqFPExhZypePWcYhU5qxTn2Ke4MJFhXlDsY5naDjJ2qC1jvEHtyEXC4yNqjXFgl/z88jvZ/rJRHtXhz94GbVLbBTDdYm/L+kklMKAYX9nXmoayTfLpE/mb59BesG8bwjwjv6HkfXo1Cu0RY2cmNLdKvsNQidSqLmIzFfLHh9cfH6YGKjMYcE4oSsmBEwcJxps/6YG/GwbSxrau7i1o1v3V+zH0PfiPf1zqq3ByA7pMAAAAAElFTkSuQmCC">
-                    <a href="https://github.com/shotstack/pexels-demo" target="_blank">Get the Source Code</a>
+                    <a href="https://github.com/shotstack/watermark-demo" target="_blank">Get the Source Code</a>
                 </div>
             </div>
             <div class="col-7 video-container">
@@ -323,6 +231,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-8 offset-md-2 my-5">
+                <h3 class="font-weight-normal">About the video watermark demo</h3>
+                <p>
+                    This demo application shows how you can build an interface to apply a watermark to a video using the
+                    <a href="https://shotstack.io">Shotstack</a> cloud video editing API. The form prepares the video, 
+                    watermark and watermark settings and posts the required parameters to the Shotstack API which takes
+                    care of rendering the video.
+                </p>
+                <p>
+                    This demo is provided as 
+                    <a href="https://github.com/shotstack/watermark-demo" target="_blank">open source</a> code so you 
+                    can use it as is, adapt it to your own needs or use it as the basis to build a fully automated 
+                    video watermark application that can apply a watermark to 1000's of videos as part of an automated
+                    workflow.
+                </p>
             </div>
         </div>
     </div>
