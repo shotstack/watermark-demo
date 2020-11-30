@@ -1,6 +1,7 @@
 var apiUrl = 'http://localhost:3000/demo/'; // 'https://jeh7qrmbub.execute-api.ap-southeast-2.amazonaws.com/demo/';
 var apiEndpoint = apiUrl + 'shotstack';
 var urlEndpoint = apiUrl + 'upload/sign';
+var probeEndpoint = 'https://api.shotstack.io/stage/probe/';
 var s3Bucket = 'https://shotstack-demo-storage.s3-ap-southeast-2.amazonaws.com/'
 var progress = 0;
 var progressIncrement = 10;
@@ -14,7 +15,6 @@ var player;
  * @param {String} src  the video URL
  */
 function initialiseVideo(src) {
-
     player = new Plyr('#player', {
         controls: [
             'play-large',
@@ -164,9 +164,7 @@ function resetErrors() {
  * Reset form
  */
 function resetForm() {
-    //$('form').trigger("reset");
     $('#submit-video').prop('disabled', false);
-    //removeFile($('.remove-file'));
 }
 
 /**
@@ -381,6 +379,24 @@ function getSelectedWatermarkFile() {
 }
 
 /**
+ * Get the length of a video file and update the max duration.
+ * Uses the Shotstack probe endpoint
+ * 
+ * @param {String} url 
+ */
+function setVideoDurationFromFile(url) {
+    var $clipLengthField = $('#clip-length');
+    $clipLengthField.prop('disabled', true);
+
+    $.get(probeEndpoint + encodeURIComponent(url), function (data, status) {
+        var duration = Math.round(data.response.metadata.format.duration * 10) / 10;
+        $clipLengthField.val(duration);
+        $clipLengthField.prop('max', duration);
+        $clipLengthField.prop('disabled', false);
+    });
+}
+
+/**
  * Upload a file to AWS S3
  * 
  * @param {String} file 
@@ -417,6 +433,7 @@ function uploadFileToS3(file, presignedPostData, element) {
         if (xhr.status === 204) {
             setUploadActive($uploadButton);
             $filePlaceholderName.text(file.name).attr('data-file', presignedPostData.fields['key']);
+
         } else {
             console.log(xhr.status);
         }
@@ -520,6 +537,12 @@ $(document).ready(function () {
         });
     });
 
+    /** Video URL field change event */
+    $('#video-url').blur(function () {
+        var videoUrl = $(this).val();
+        setVideoDurationFromFile(videoUrl);
+    });
+
     /** Form submit event */
     $('form').submit(function (event) {
         if (isFormValid()) {
@@ -527,7 +550,6 @@ $(document).ready(function () {
             resetVideo();
             submitVideoEdit();
         } else {
-            console.log('here')
             displayError('Please select both a video and a watermark.')
         }
 

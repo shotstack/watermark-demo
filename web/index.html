@@ -80,14 +80,15 @@
                             type="number"
                             min=1
                             max=120
-                            step=1
+                            step=0.1
                             pattern="[0-1]"
                             oninvalid="setCustomValidity('Only values between 1 and 120 are allowed')"
                             oninput="setCustomValidity('')"
                             class="form-control advanced"
                             id="clip-length"
-                            value="15"
+                            value="0"
                             maxlength="3"
+                            disabled="disabled"
                         />
                     </div>
 
@@ -114,9 +115,9 @@
                             oninput="setCustomValidity('')"
                             class="form-control input-url"
                             id="watermark-url"
-                            placeholder="Link to your video or image watermark"
+                            placeholder="https://mydomain.com/storage/video.mp4"
                             maxlength="300"
-                        >
+                        />
                         <input name="watermark-upload" class="d-none upload" type="file" id="watermark-upload"/>
                         <div class="my-1 file-placeholder" id="watermark-file">
                             <span class="name"></span>
