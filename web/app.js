@@ -393,7 +393,10 @@ function setVideoDurationFromFile(url) {
         $clipLengthField.val(duration);
         $clipLengthField.prop('max', duration);
         $clipLengthField.prop('disabled', false);
-    });
+    }).fail(function() {
+        $clipLengthField.prop('max', 120);
+        $clipLengthField.prop('disabled', false);
+    })
 }
 
 /**
@@ -432,8 +435,8 @@ function uploadFileToS3(file, presignedPostData, element) {
         $uploadIcon.removeClass('d-none');
         if (xhr.status === 204) {
             setUploadActive($uploadButton);
+            setVideoDurationFromFile(s3Bucket + presignedPostData.fields['key']);
             $filePlaceholderName.text(file.name).attr('data-file', presignedPostData.fields['key']);
-
         } else {
             console.log(xhr.status);
         }
