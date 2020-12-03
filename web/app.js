@@ -6,7 +6,7 @@ var s3Bucket = 'https://shotstack-demo-storage.s3-ap-southeast-2.amazonaws.com/'
 var progress = 0;
 var progressIncrement = 10;
 var pollIntervalSeconds = 10;
-var unknownError = 'An unknown error has occurred. Dispatching minions...';
+var unknownError = 'An error has occurred, please try again later.';
 var player;
 
 /**
@@ -123,25 +123,7 @@ function displayError(error) {
 
     if (error.status === 400) {
         var response = error.responseJSON;
-
-        if (response.data.isJoi) {
-            $.each(response.data.details, function (index, error) {
-                if (error.context.key === 'search') {
-                    $('#search-group label, #search').addClass('text-danger is-invalid');
-                    $('#search-group').append('<div class="d-block invalid-feedback">Enter a subject keyword to create a video</div>').show();
-                }
-
-                if (error.context.key === 'title') {
-                    $('#title-group label, #title').addClass('text-danger is-invalid');
-                    $('#title-group').append('<div class="d-block invalid-feedback">Enter a title for your video</div>').show();
-                }
-
-                if (error.context.key === 'soundtrack') {
-                    $('#soundtrack-group label, #soundtrack').addClass('text-danger is-invalid');
-                    $('#soundtrack-group').append('<div class="d-block invalid-feedback">Please choose a soundtrack from the list</div>').show();
-                }
-            });
-        } else if (typeof response.data === 'string') {
+        if (typeof response.data === 'string') {
             $('#errors').text(response.data).removeClass('d-hide').addClass('d-block');
         } else {
             $('#errors').text(unknownError).removeClass('d-hide').addClass('d-block');
@@ -213,7 +195,7 @@ function submitVideoEdit() {
             pollVideoStatus(response.data.response.id);
         }
     }).fail(function (error) {
-        displayError({ status: 400, });
+        displayError(error);
         $('#submit-video').prop('disabled', false);
     });
 }

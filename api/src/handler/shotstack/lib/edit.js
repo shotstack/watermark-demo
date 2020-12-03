@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const Joi = require('joi');
 
 const SD_WIDTH = 1024;
 const SD_HEIGHT = 576;
@@ -38,8 +39,36 @@ const convertPaddingToOffsets = (padding, position) => {
     ]
 }
 
-const createJson = function (body) {
+const validateBody = (body) => {
+    const schema = Joi.object({
+        video: Joi.string().uri().min(2).max(300).required(),
+        watermark: Joi.string().uri().min(2).max(300).required(),
+        position: Joi.string().valid('topLeft', 'topRight', 'bottomLeft', 'bottomRight').required(),
+        duration: Joi.number().min(0.1).max(120),
+        padding: Joi.number().min(0).max(100),
+        scale: Joi.number().min(0).max(2),
+        opacity: Joi.number().min(0).max(1)
+    });
+
+    return schema.validate({
+        video: body.video,
+        watermark: body.watermark,
+        position: body.position,
+        duration: body.duration,
+        padding: body.padding,
+        scale: body.scale,
+        opacity: body.opacity
+    });
+}
+
+const createJson = (body) => {
     return new Promise((resolve, reject) => {
+        const valid = validateBody(body);
+
+        if (valid.error) {
+            reject(valid.error.details[0].message);
+        }
+
         const watermarkUrl = body.watermark;
         const videoUrl = body.video;
         const position = body.position;

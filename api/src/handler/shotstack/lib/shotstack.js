@@ -21,7 +21,6 @@ const submit = (json) => {
             return reject(error)
         });
     })
-
 }
 
 const status = (id) => {
@@ -39,7 +38,6 @@ const status = (id) => {
             return reject(error);
         }
     })
-
 }
 
 module.exports = {

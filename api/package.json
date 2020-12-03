@@ -1,18 +1,21 @@
 {
   "name": "watermark-demo",
   "version": "0.0.1",
+  "description": "Shotstack video watermark demo and Serverless",
   "private": true,
   "scripts": {
     "deploy": "sls deploy",
     "start": "node src/app.js"
   },
   "dependencies": {
-    "aws-sdk": "^2.793.0",
+    "aws-sdk": "^2.800.0",
     "axios": "^0.21.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mime": "^2.4.6",
-    "serverless-dotenv-plugin": "^3.1.0",
+    "joi": "^17.3.0",
     "uniqid": "^5.2.0"
+  },
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^1.2.1"
   }
 }
