@@ -417,7 +417,9 @@ function uploadFileToS3(file, presignedPostData, element) {
         $uploadIcon.removeClass('d-none');
         if (xhr.status === 204) {
             setUploadActive($uploadButton);
-            setVideoDurationFromFile(s3Bucket + presignedPostData.fields['key']);
+            if ($uploadField.attr('id') === 'video-upload') {
+                setVideoDurationFromFile(s3Bucket + presignedPostData.fields['key']);
+            }
             $filePlaceholderName.text(file.name).attr('data-file', presignedPostData.fields['key']);
         } else {
             console.log(xhr.status);
