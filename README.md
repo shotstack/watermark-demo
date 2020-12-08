@@ -79,7 +79,7 @@ To deploy to AWS Lambda (from the _api_ directory):
 
 ```bash
 cd api
-npm run serverless
+npm run deploy
 ```
 
 Once the API is deployed set the `var apiEndpoint` variable in **web/app.js** to the returned
