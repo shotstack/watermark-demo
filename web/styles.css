@@ -82,3 +82,7 @@ input[name="video-url"], #video-url, #watermark-url, .file-placeholder  {
 .info {
     cursor: pointer;
 }
+
+label {
+  font-weight: 600;
+}
