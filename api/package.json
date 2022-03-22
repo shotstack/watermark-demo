@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "deploy": "sls deploy",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "dependencies": {
     "aws-sdk": "^2.800.0",
@@ -16,6 +17,7 @@
     "uniqid": "^5.2.0"
   },
   "devDependencies": {
+    "nodemon": "^2.0.15",
     "serverless-dotenv-plugin": "^1.2.1"
   }
 }

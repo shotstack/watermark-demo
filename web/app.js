@@ -9,6 +9,10 @@ var pollIntervalSeconds = 10;
 var unknownError = 'An error has occurred, please try again later.';
 var player;
 
+var outputDimensions = { width: 0, height: 0 };
+var defaultSdWidth = 1024;
+var defaultSdHeight = 576;
+
 /**
  * Initialise and play the video
  *
@@ -179,6 +183,11 @@ function submitVideoEdit() {
         'video': getSelectedVideoFile(),
         'watermark': getSelectedWatermarkFile()
     };
+
+    if (outputDimensions.width && outputDimensions.height) {
+        formData.width = outputDimensions.width;
+        formData.height = outputDimensions.height;
+    }
 
     $.ajax({
         type: 'POST',
@@ -361,6 +370,98 @@ function getSelectedWatermarkFile() {
 }
 
 /**
+ * Return the width and height of the output video, respecting any rotation.
+ * Return 0 for both width and height if we can't determine either.
+ *
+ * @param {any} metadata - video file metadata
+ *
+ * @return {object} - { width, height } of output video
+ */
+function determineOutputWidthHeight(metadata) {
+    /**
+     * Find the video stream.
+     *
+     * @param {any} streams - array of video file metadata streams
+     *
+     * @return {any} - video stream; null if none available.
+     */
+    function findVideoStream(streams) {
+        var i;
+        for (i = 0; i < streams.length; i++) {
+            if (streams[i].codec_type === 'video') {
+                return streams[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Swap width and height.
+     *
+     * @param {object} - { width, height }
+     */
+    function swapWithHeight(dims) {
+        var tmp = dims.width;
+        dims.width = dims.height;
+        dims.height = tmp;
+    }
+
+    var dimensions = { width: 0, height: 0 };
+    var sdDimensions = { width: defaultSdWidth, height: defaultSdHeight };
+
+    var videoStream = findVideoStream(metadata.streams);
+    if (videoStream) {
+        if (videoStream.width) {
+            dimensions.width = videoStream.width;
+        }
+        if (videoStream.height) {
+            dimensions.height = videoStream.height;
+        }
+
+        if (dimensions.width && dimensions.height) {
+            if (dimensions.height > dimensions.width) {
+                swapWithHeight(sdDimensions);
+            }
+
+            // Swap width and height if this video is rotated.
+            if (videoStream.tags?.rotate === '90' || videoStream.tags?.rotate === '270') {
+                swapWithHeight(dimensions);
+                swapWithHeight(sdDimensions);
+            } else if (videoStream.side_data_list?.length &&
+                    (videoStream.side_data_list[0].rotation === -90 ||
+                        videoStream.side_data_list[0].rotation === -270)) {
+                swapWithHeight(dimensions);
+                swapWithHeight(sdDimensions);
+            }
+
+            // Keep width and height under SD size.
+            if (dimensions.width > sdDimensions.width ||
+                    dimensions.height > sdDimensions.height) {
+                if (dimensions.width > dimensions.height) {
+                    var factor = sdDimensions.width / dimensions.width;
+                    dimensions.width = sdDimensions.width;
+                    dimensions.height = Math.floor(factor * dimensions.height);
+                } else {
+                    var factor = sdDimensions.height / dimensions.height;
+                    dimensions.height = sdDimensions.height;
+                    dimensions.width = Math.floor(factor * dimensions.width);
+                }
+            }
+
+            // Custom dimensions must be divisible by 2.
+            if (dimensions.width % 2) {
+                dimensions.width = dimensions.width + 1;
+            }
+            if (dimensions.height % 2) {
+                dimensions.height = dimensions.height + 1;
+            }
+        }
+    }
+
+    return dimensions;
+}
+
+/**
  * Get the length of a video file and update the max duration.
  * Uses the Shotstack probe endpoint
  * 
@@ -375,6 +476,8 @@ function setVideoDurationFromFile(url) {
         $clipLengthField.val(duration);
         $clipLengthField.prop('max', duration);
         $clipLengthField.prop('disabled', false);
+
+        outputDimensions = determineOutputWidthHeight(data.response.metadata);
     }).fail(function() {
         $clipLengthField.prop('max', 120);
         $clipLengthField.prop('disabled', false);

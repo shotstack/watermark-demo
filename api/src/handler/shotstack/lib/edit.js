@@ -47,7 +47,9 @@ const validateBody = (body) => {
         duration: Joi.number().min(0.1).max(120),
         padding: Joi.number().min(0).max(100),
         scale: Joi.number().min(0).max(2),
-        opacity: Joi.number().min(0).max(1)
+        opacity: Joi.number().min(0).max(1),
+        width: Joi.number().min(2).max(4096).multiple(2),
+        height: Joi.number().min(2).max(4096).multiple(2),
     });
 
     return schema.validate({
@@ -57,7 +59,9 @@ const validateBody = (body) => {
         duration: body.duration,
         padding: body.padding,
         scale: body.scale,
-        opacity: body.opacity
+        opacity: body.opacity,
+        width: body.width,
+        height: body.height,
     });
 }
 
@@ -76,6 +80,8 @@ const createJson = (body) => {
         const [x, y] = convertPaddingToOffsets(parseInt(body.padding) || 20, position);
         const scale = parseFloat(body.scale) || 0;
         const opacity = parseFloat(body.opacity) || 0.7;
+        const width = body.width;
+        const height = body.height;
 
         fs.readFile(__dirname + '/template.json', 'utf-8', function (err, data) {
             if (err) {
@@ -94,6 +100,11 @@ const createJson = (body) => {
             jsonParsed.timeline.tracks[WATERMARK_INDEX].clips[0].opacity = opacity;
             jsonParsed.timeline.tracks[VIDEO_INDEX].clips[0].asset.src = videoUrl;
             jsonParsed.timeline.tracks[VIDEO_INDEX].clips[0].length = duration;
+
+            if (width && height) {
+                jsonParsed.output.size = { width, height };
+                delete jsonParsed.output.resolution;
+            }
 
             const json = JSON.stringify(jsonParsed);
 
