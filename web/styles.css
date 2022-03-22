@@ -86,3 +86,7 @@ input[name="video-url"], #video-url, #watermark-url, .file-placeholder  {
 label {
   font-weight: 600;
 }
+
+.plyr video {
+    max-height: 80vh;
+}

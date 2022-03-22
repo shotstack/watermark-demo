@@ -1,4 +1,5 @@
 service: demo-watermark-shotstack
+useDotenv: true
 
 provider:
   name: aws
