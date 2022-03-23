@@ -3,14 +3,22 @@ useDotenv: true
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   stage: demo
   region: ap-southeast-2
+  logRetentionInDays: 30
+  deploymentBucket:
+    name: ${env:SERVERLESS_DEPLOYMENT_BUCKET_PREFIX}-${self:provider.region}
+    blockPublicAccess: true
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:PutObject
       Resource: arn:aws:s3:::${env:AWS_S3_UPLOADS_BUCKET}/*
+  environment:
+    SHOTSTACK_API_KEY: ${env:SHOTSTACK_API_KEY}
+    SHOTSTACK_HOST: ${env:SHOTSTACK_HOST}
+    AWS_S3_UPLOADS_BUCKET: ${env:AWS_S3_UPLOADS_BUCKET}
 
 package:
   exclude:
@@ -53,6 +61,3 @@ functions:
           path: upload/sign
           method: post
           cors: true
-
-plugins:
-  - serverless-dotenv-plugin
