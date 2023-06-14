@@ -347,8 +347,8 @@ function getSelectedVideoFile() {
     }
 
     if ($videoFile.prop('required')) {
-        var $videoFileName = $('#video-file .name')
-        return s3Bucket + $videoFileName.attr("data-file")
+        var $videoFileName = $('#video-file .name');
+        return s3Bucket + encodeURIComponent($videoFileName.attr('data-file'));
     }
 }
 
@@ -364,8 +364,8 @@ function getSelectedWatermarkFile() {
     }
 
     if ($watermarkFile.prop('required')) {
-        var $watermarkFileName = $('#watermark-file .name')
-        return s3Bucket + $watermarkFileName.attr("data-file")
+        var $watermarkFileName = $('#watermark-file .name');
+        return s3Bucket + encodeURIComponent($watermarkFileName.attr('data-file'));
     }
 }
 
